@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>秒換 SecUnit - Instant Unit & API Converter</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
@@ -13,7 +12,6 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
 
-  <!-- Main Container -->
   <main class="max-w-xl w-full bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-2xl my-auto">
     
     <!-- Header -->
@@ -25,13 +23,12 @@
         <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">零廣告 · 6 大外接 API 即時數據支持</p>
       </div>
       
-      <!-- Language Toggle Button -->
       <button onclick="toggleLanguage()" class="text-xs font-mono bg-slate-700 hover:bg-slate-600 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full transition active:scale-95">
         🌐 <span id="langBtnText">EN</span>
       </button>
     </div>
 
-    <!-- Navigation Tabs (Scrollable on mobile) -->
+    <!-- Navigation Tabs -->
     <div class="overflow-x-auto pb-2 mb-4 scrollbar-none">
       <div class="flex gap-1.5 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50 text-center min-w-max">
         <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active"></button>
@@ -53,7 +50,7 @@
                class="w-full bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-3 text-2xl font-mono font-bold text-white focus:outline-none transition">
       </div>
 
-      <!-- Extra Option: Baking Ingredient Selector (Only visible in Baking tab) -->
+      <!-- Baking Selector (Hidden by default) -->
       <div id="bakingSelectorGroup" class="hidden">
         <label class="block text-xs font-medium text-amber-400 mb-1">選擇食材類型 (食材密度專用)</label>
         <select id="foodType" onchange="convert()" class="w-full bg-slate-900 border border-amber-500/50 rounded-xl px-3 py-2 text-sm text-amber-200 focus:outline-none">
@@ -80,8 +77,6 @@
       <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-700/80 rounded-2xl p-5 mt-6 text-center relative group">
         <div id="t-resultLabel" class="text-xs text-slate-400 font-medium mb-1">轉換結果</div>
         <div id="result" class="text-3xl sm:text-4xl font-extrabold font-mono text-cyan-400 tracking-tight break-all">---</div>
-        
-        <!-- Live API Extra Info -->
         <div id="extraInfo" class="text-xs text-slate-400 mt-2 font-light min-h-[1.25rem]"></div>
 
         <button onclick="copyResult()" class="mt-3 inline-flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-lg transition active:scale-95">
@@ -91,13 +86,11 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="mt-6 text-center text-xs text-slate-500 space-y-1">
     <p>SecUnit &copy; 2026 | Pure & Ad-free · Multi-API Powered</p>
     <p id="userLocationText" class="text-slate-600">偵測定位中...</p>
   </footer>
 
-  <!-- JS Module Entry Point -->
   <script type="module">
     import { 
       fetchGlobalRates, 
@@ -110,10 +103,15 @@
     let lang = 'zh';
     let currentTab = 'weight';
 
-    // Live API Data Holders
-    let globalRates = { 'HKD': 1, 'USD': 0.128, 'JPY': 19.2, 'EUR': 0.118, 'GBP': 0.101, 'TWD': 4.15, 'CNY': 0.92 };
-    let liveGoldUsdOz = 2350.0; // Default Gold Price
-    let hkEnvData = { temp: null, humidity: null, uvIndex: null };
+    let globalRates = {
+      'HKD': 1, 'USD': 0.128, 'JPY': 19.2, 'EUR': 0.118, 'GBP': 0.101, 'TWD': 4.15, 'CNY': 0.92,
+      'KRW': 172.5, 'THB': 4.52, 'SGD': 0.171, 'MYR': 0.57, 'VND': 3180.0, 'IDR': 2050.0,
+      'PHP': 7.35, 'INR': 10.7, 'AUD': 0.192, 'CAD': 0.175, 'NZD': 0.21, 'CHF': 0.112,
+      'SEK': 1.35, 'NOK': 1.38, 'DKK': 0.88, 'AED': 0.47, 'TRY': 4.25, 'BRL': 0.71,
+      'MXN': 2.38, 'ZAR': 2.32
+    };
+    let liveGoldUsdOz = 2350.0;
+    let hkEnvData = { temp: null, humidity: null };
 
     const i18n = {
       zh: {
@@ -152,7 +150,27 @@
         'EUR': { zh: '歐元 (EUR)', en: 'EUR' },
         'GBP': { zh: '英鎊 (GBP)', en: 'GBP' },
         'TWD': { zh: '新台幣 (TWD)', en: 'TWD' },
-        'CNY': { zh: '人民幣 (CNY)', en: 'CNY' }
+        'CNY': { zh: '人民幣 (CNY)', en: 'CNY' },
+        'KRW': { zh: '韓圓 (KRW)', en: 'KRW' },
+        'THB': { zh: '泰銖 (THB)', en: 'THB' },
+        'SGD': { zh: '新加坡元 (SGD)', en: 'SGD' },
+        'MYR': { zh: '馬來西亞文吉 (MYR)', en: 'MYR' },
+        'VND': { zh: '越南盾 (VND)', en: 'VND' },
+        'IDR': { zh: '印尼盾 (IDR)', en: 'IDR' },
+        'PHP': { zh: '菲律賓比索 (PHP)', en: 'PHP' },
+        'INR': { zh: '印度盧比 (INR)', en: 'INR' },
+        'AUD': { zh: '澳元 (AUD)', en: 'AUD' },
+        'CAD': { zh: '加元 (CAD)', en: 'CAD' },
+        'NZD': { zh: '紐西蘭元 (NZD)', en: 'NZD' },
+        'CHF': { zh: '瑞士法郎 (CHF)', en: 'CHF' },
+        'SEK': { zh: '瑞典克朗 (SEK)', en: 'SEK' },
+        'NOK': { zh: '挪威克朗 (NOK)', en: 'NOK' },
+        'DKK': { zh: '丹麥克朗 (DKK)', en: 'DKK' },
+        'AED': { zh: '阿聯酋迪拉姆 (AED)', en: 'AED' },
+        'TRY': { zh: '土耳其里拉 (TRY)', en: 'TRY' },
+        'BRL': { zh: '巴西雷亞爾 (BRL)', en: 'BRL' },
+        'MXN': { zh: '墨西哥比索 (MXN)', en: 'MXN' },
+        'ZAR': { zh: '南非蘭特 (ZAR)', en: 'ZAR' }
       },
       gold: {
         'oz_t': { zh: '國際金衡盎司 (USD oz t)', en: 'Gold Troy Oz (USD)' },
@@ -194,10 +212,7 @@
       currentTab = tab;
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
       document.getElementById(`tab-${tab}`).classList.add('tab-active');
-      
-      // Show Baking selector group only in baking tab
       document.getElementById('bakingSelectorGroup').className = tab === 'baking' ? 'block' : 'hidden';
-
       populateSelects();
       convert();
     };
@@ -247,17 +262,14 @@
 
       let res = 0;
 
-      // 1. Forex FX API Math
       if (currentTab === 'fx') {
         const hkdBase = from === 'HKD' ? val : val / (globalRates[from] || 1);
         res = to === 'HKD' ? hkdBase : hkdBase * (globalRates[to] || 1);
-        extraInfo.innerText = '💡 數據即時對接 Frankfurter 全球匯率 API';
+        extraInfo.innerText = '💡 數據即時對接 Frankfurter 全球 30+ 國匯率 API';
       }
-      // 2. Gold API Math (Troy Oz USD <-> HK Gold Tael HKD)
       else if (currentTab === 'gold') {
         const usdToHkdRate = 7.82;
-        const taelPerOz = 0.8294; // 1 Troy Oz ≈ 0.8294 HK Tael
-        
+        const taelPerOz = 0.8294;
         if (from === 'oz_t' && to === 'tael_hk') {
           res = (val * liveGoldUsdOz * usdToHkdRate) / taelPerOz;
         } else if (from === 'tael_hk' && to === 'oz_t') {
@@ -267,16 +279,13 @@
         }
         extraInfo.innerText = `💡 當前國際即時黃金參考價: $${liveGoldUsdOz} USD/oz`;
       }
-      // 3. Baking Density Math
       else if (currentTab === 'baking') {
         const foodType = document.getElementById('foodType').value;
         const density = FOOD_DENSITY_MAP[foodType]?.densityGramsPerMl || 1.0;
-        
         let volumeMl = from === 'cup' ? val * 240 : (from === 'g' ? val / density : val);
         res = to === 'cup' ? volumeMl / 240 : (to === 'g' ? volumeMl * density : volumeMl);
         extraInfo.innerText = '💡 USDA 權威食材物理密度資料庫計算';
       }
-      // 4. General Physical Units
       else {
         const baseVal = units[currentTab][from].toBase(val);
         res = units[currentTab][to].fromBase(baseVal);
@@ -301,22 +310,22 @@
       });
     };
 
-    // Initialize App & Fetch Live API Data Parallelly
     async function initApp() {
       updateUIStrings();
       populateSelects();
       convert();
 
-      // Async API Calls
       try {
         const loc = await fetchUserLocation();
         document.getElementById('userLocationText').innerText = `📍 當前訪問地區: ${loc.countryName} (${loc.countryCode})`;
 
-        globalRates = await fetchGlobalRates('HKD');
+        const liveRates = await fetchGlobalRates('HKD');
+        if (liveRates) globalRates = { 'HKD': 1, ...liveRates };
+
         liveGoldUsdOz = await fetchGoldPrice();
         hkEnvData = await fetchHKEnvironmentData();
 
-        convert(); // Re-render result with live API data
+        convert();
       } catch (err) {
         console.warn('API Background Load complete with fallbacks');
       }
