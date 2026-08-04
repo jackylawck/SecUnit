@@ -30,15 +30,6 @@
       </button>
     </div>
 
-    <!-- Smart Input -->
-    <div class="mb-6">
-      <label id="t-smartLabel" class="block text-xs font-medium text-slate-300 mb-1.5">
-        🔍 智能速換 (例如: <span class="text-cyan-400 cursor-pointer" onclick="fillSmart('150 lbs to kg')">150 lbs to kg</span>, <span class="text-cyan-400 cursor-pointer" onclick="fillSmart('500 sqft to sqm')">500 sqft to sqm</span>)
-      </label>
-      <input type="text" id="smartInput" oninput="handleSmartInput()" placeholder="100 sqft to sqm / 80 f to c..." 
-             class="w-full bg-slate-900/90 border border-slate-700 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none transition">
-    </div>
-
     <!-- Navigation Tabs -->
     <div class="grid grid-cols-4 gap-1.5 mb-6 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50">
       <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active"></button>
@@ -84,14 +75,13 @@
   </footer>
 
   <script>
-    let lang = 'zh'; // 'zh' or 'en'
+    let lang = 'zh';
     let currentTab = 'weight';
     let hkmaRates = { 'HKD': 1, 'USD': 7.8, 'GBP': 9.8, 'EUR': 8.5 };
 
     const i18n = {
       zh: {
         subtitle: '零廣告 · 離線可用 · 香港在地化',
-        smartLabel: '🔍 智能速換 (例如: <span class="text-cyan-400 cursor-pointer" onclick="fillSmart(\'150 lbs to kg\')">150 lbs to kg</span>)',
         inputLabel: '輸入數值',
         fromLabel: '由 (From)',
         toLabel: '轉至 (To)',
@@ -102,7 +92,6 @@
       },
       en: {
         subtitle: 'Ad-free · Offline Ready · HK Localized',
-        smartLabel: '🔍 Smart Input (e.g. <span class="text-cyan-400 cursor-pointer" onclick="fillSmart(\'150 lbs to kg\')">150 lbs to kg</span>)',
         inputLabel: 'Value',
         fromLabel: 'From',
         toLabel: 'To',
@@ -148,14 +137,12 @@
     function updateUIStrings() {
       const t = i18n[lang];
       document.getElementById('t-subtitle').innerText = t.subtitle;
-      document.getElementById('t-smartLabel').innerHTML = t.smartLabel;
       document.getElementById('t-inputLabel').innerText = t.inputLabel;
       document.getElementById('t-fromLabel').innerText = t.fromLabel;
       document.getElementById('t-toLabel').innerText = t.toLabel;
       document.getElementById('t-resultLabel').innerText = t.resultLabel;
       document.getElementById('copyBtnText').innerText = t.copyBtn;
 
-      // Update Tab titles
       Object.keys(t.tabs).forEach(key => {
         document.getElementById(`tab-${key}`).innerText = t.tabs[key];
       });
