@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>秒換 SecUnit - 極速單位與匯率轉換</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Title -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+        秒換 SecUnit
+      </h1>
+      <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full">v1.0 MVP</span>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="grid grid-cols-3 gap-2 mb-6">
+      <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-sm rounded-lg bg-blue-600 text-white font-medium">重量</button>
+      <button onclick="switchTab('length')" id="tab-length" class="tab-btn py-2 text-sm rounded-lg bg-slate-700 text-slate-300 font-medium">面積/長度</button>
+      <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-sm rounded-lg bg-slate-700 text-slate-300 font-medium">HKMA 匯率</button>
+    </div>
+
+    <!-- Input Section -->
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">輸入數值</label>
+        <input type="number" id="inputValue" value="1" oninput="convert()" 
+               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xl font-mono text-white focus:outline-none focus:border-blue-500 transition">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">由 (From)</label>
+          <select id="fromUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">轉至 (To)</label>
+          <select id="toUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="bg-slate-900 border border-slate-700/50 rounded-xl p-4 mt-6 text-center">
+        <div class="text-xs text-slate-400 mb-1">轉換結果</div>
+        <div id="result" class="text-3xl font-bold font-mono text-cyan-400">---</div>
+        <div id="extraInfo" class="text-xs text-slate-500 mt-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="mt-8 text-xs text-slate-500">
+    SecUnit &copy; 2026 | 純淨 0 廣告 · 毫秒級響應
+  </footer>
+
+  <script>
+    let currentTab = 'weight';
+    let hkmaRates = {};
+
+    const units = {
+      weight: {
+        'lbs': { name: '磅 (lbs)', rate: 1 },
+        'kg': { name: '公斤 (kg)', rate: 0.453592 },
+        'g': { name: '克 (g)', rate: 453.592 },
+        'catty_hk': { name: '香港斤 (司馬斤)', rate: 0.75 }
+      },
+      length: {
+        'sqft': { name: '平方呎 (sq ft)', rate: 1 },
+        'sqm': { name: '平方米 (sq m)', rate: 0.092903 },
+        'ping': { name: '台灣坪', rate: 0.028103 }
+      },
+      fx: {
+        'USD': { name: '美元 (USD)', rate: 1 },
+        'HKD': { name: '港元 (HKD)', rate: 7.8 } // Default fallback
+      }
+    };
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.replace('bg-blue-600', 'bg-slate-700');
+        btn.classList.replace('text-white', 'text-slate-300');
+      });
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      activeBtn.classList.replace('bg-slate-700', 'bg-blue-600');
+      activeBtn.classList.replace('text-slate-300', 'text-white');
+
+      populateSelects();
+      convert();
+    }
+
+    function populateSelects() {
+      const fromSelect = document.getElementById('fromUnit');
+      const toSelect = document.getElementById('toUnit');
+      fromSelect.innerHTML = '';
+      toSelect.innerHTML = '';
+
+      const currentUnits = units[currentTab];
+      const keys = Object.keys(currentUnits);
+
+      keys.forEach((key, idx) => {
+        fromSelect.add(new Option(currentUnits[key].name, key));
+        toSelect.add(new Option(currentUnits[key].name, key));
+      });
+
+      if(keys.length > 1) toSelect.selectedIndex = 1;
+    }
+
+    function convert() {
+      const val = parseFloat(document.getElementById('inputValue').value) || 0;
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+      const extraInfo = document.getElementById('extraInfo');
+
+      if (!from || !to) return;
+
+      let res = 0;
+      if (currentTab === 'fx' && hkmaRates[from] && hkmaRates[to]) {
+        // HKMA Currency Calculation
+        const inHKD = val * hkmaRates[from];
+        res = inHKD / hkmaRates[to];
+        extraInfo.innerText = '數據來源：香港金管局 (HKMA) 官方 API';
+      } else {
+        const fromRate = units[currentTab][from].rate;
+        const toRate = units[currentTab][to].rate;
+        res = (val / fromRate) * toRate;
+        extraInfo.innerText = '';
+      }
+
+      document.getElementById('result').innerText = res.toLocaleString(undefined, { maximumFractionDigits: 4 });
+    }
+
+    // Fetch HKMA Open API Data
+    async function fetchHKMA() {
+      try {
+        const res = await fetch('https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/er-eor');
+        const data = await res.json();
+        if (data.result && data.result.records && data.result.records.length > 0) {
+          const latest = data.result.records[0];
+          hkmaRates = {
+            'HKD': 1,
+            'USD': parseFloat(latest.usd) || 7.8
+          };
+          units.fx['USD'].rate = hkmaRates['USD'];
+        }
+      } catch (e) {
+        console.log('HKMA API Fallback active');
+        hkmaRates = { 'HKD': 1, 'USD': 7.85 };
+      }
+    }
+
+    // Init
+    populateSelects();
+    convert();
+    fetchHKMA();
+  </script>
+</body>
+</html>
