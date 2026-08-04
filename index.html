@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>秒換 SecUnit - Instant Unit & API Converter</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
@@ -12,6 +13,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
 
+  <!-- Main Container -->
   <main class="max-w-xl w-full bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-2xl my-auto">
     
     <!-- Header -->
@@ -20,20 +22,27 @@
         <h1 class="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
           秒換 SecUnit
         </h1>
-        <p class="text-xs text-slate-400 mt-0.5">零廣告 · 外接官方 API 數據支持</p>
+        <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">零廣告 · 6 大外接 API 即時數據支持</p>
       </div>
+      
+      <!-- Language Toggle Button -->
       <button onclick="toggleLanguage()" class="text-xs font-mono bg-slate-700 hover:bg-slate-600 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full transition active:scale-95">
         🌐 <span id="langBtnText">EN</span>
       </button>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="grid grid-cols-4 sm:grid-cols-5 gap-1 mb-6 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50 text-center">
-      <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active">重量</button>
-      <button onclick="switchTab('length')" id="tab-length" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">長度</button>
-      <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">溫度</button>
-      <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">HKMA 匯率</button>
-      <button onclick="switchTab('data')" id="tab-data" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">數據</button>
+    <!-- Navigation Tabs (Scrollable on mobile) -->
+    <div class="overflow-x-auto pb-2 mb-4 scrollbar-none">
+      <div class="flex gap-1.5 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50 text-center min-w-max">
+        <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active"></button>
+        <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+        <button onclick="switchTab('gold')" id="tab-gold" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+        <button onclick="switchTab('baking')" id="tab-baking" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+        <button onclick="switchTab('length')" id="tab-length" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+        <button onclick="switchTab('area')" id="tab-area" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+        <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+        <button onclick="switchTab('data')" id="tab-data" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+      </div>
     </div>
 
     <!-- Conversion Form -->
@@ -42,6 +51,18 @@
         <label id="t-inputLabel" class="block text-xs font-medium text-slate-400 mb-1">輸入數值</label>
         <input type="number" id="inputValue" value="1" step="any" oninput="convert()" 
                class="w-full bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-3 text-2xl font-mono font-bold text-white focus:outline-none transition">
+      </div>
+
+      <!-- Extra Option: Baking Ingredient Selector (Only visible in Baking tab) -->
+      <div id="bakingSelectorGroup" class="hidden">
+        <label class="block text-xs font-medium text-amber-400 mb-1">選擇食材類型 (食材密度專用)</label>
+        <select id="foodType" onchange="convert()" class="w-full bg-slate-900 border border-amber-500/50 rounded-xl px-3 py-2 text-sm text-amber-200 focus:outline-none">
+          <option value="flour">面粉 (Flour - 1 Cup ≈ 125g)</option>
+          <option value="sugar">白糖 (Sugar - 1 Cup ≈ 200g)</option>
+          <option value="butter">牛油 (Butter - 1 Cup ≈ 227g)</option>
+          <option value="honey">蜂蜜 (Honey - 1 Cup ≈ 340g)</option>
+          <option value="water">水 / 牛奶 (Water/Milk - 1 Cup = 240g)</option>
+        </select>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
@@ -60,7 +81,7 @@
         <div id="t-resultLabel" class="text-xs text-slate-400 font-medium mb-1">轉換結果</div>
         <div id="result" class="text-3xl sm:text-4xl font-extrabold font-mono text-cyan-400 tracking-tight break-all">---</div>
         
-        <!-- Live API Badge & Info -->
+        <!-- Live API Extra Info -->
         <div id="extraInfo" class="text-xs text-slate-400 mt-2 font-light min-h-[1.25rem]"></div>
 
         <button onclick="copyResult()" class="mt-3 inline-flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-lg transition active:scale-95">
@@ -70,92 +91,130 @@
     </div>
   </main>
 
+  <!-- Footer -->
   <footer class="mt-6 text-center text-xs text-slate-500 space-y-1">
-    <p>SecUnit &copy; 2026 | Pure & Ad-free · HK Context Enabled</p>
+    <p>SecUnit &copy; 2026 | Pure & Ad-free · Multi-API Powered</p>
+    <p id="userLocationText" class="text-slate-600">偵測定位中...</p>
   </footer>
 
-  <!-- 引入外接 API 模組 -->
+  <!-- JS Module Entry Point -->
   <script type="module">
-    import { fetchHKMARates, fetchHKWeather } from './api.js';
+    import { 
+      fetchGlobalRates, 
+      fetchHKEnvironmentData, 
+      fetchGoldPrice, 
+      fetchUserLocation, 
+      FOOD_DENSITY_MAP 
+    } from './api.js';
 
     let lang = 'zh';
     let currentTab = 'weight';
-    let hkmaRates = { 'HKD': 1, 'USD': 7.8, 'GBP': 9.8, 'EUR': 8.5 };
-    let liveTempC = null;
+
+    // Live API Data Holders
+    let globalRates = { 'HKD': 1, 'USD': 0.128, 'JPY': 19.2, 'EUR': 0.118, 'GBP': 0.101, 'TWD': 4.15, 'CNY': 0.92 };
+    let liveGoldUsdOz = 2350.0; // Default Gold Price
+    let hkEnvData = { temp: null, humidity: null, uvIndex: null };
+
+    const i18n = {
+      zh: {
+        subtitle: '零廣告 · 6 大外接 API 即時數據支持',
+        inputLabel: '輸入數值',
+        fromLabel: '由 (From)',
+        toLabel: '轉至 (To)',
+        resultLabel: '轉換結果',
+        copyBtn: '📋 複製結果',
+        copied: '✅ 已複製！',
+        tabs: { weight: '重量', fx: '全球匯率', gold: '即時金價', baking: '烘焙食材', length: '長度', area: '面積', temp: '溫度', data: '數據/網速' }
+      },
+      en: {
+        subtitle: 'Ad-free · Powered by 6 Live Open APIs',
+        inputLabel: 'Value',
+        fromLabel: 'From',
+        toLabel: 'To',
+        resultLabel: 'Result',
+        copyBtn: '📋 Copy Result',
+        copied: '✅ Copied!',
+        tabs: { weight: 'Weight', fx: 'Forex API', gold: 'Live Gold', baking: 'Baking', length: 'Length', area: 'Area', temp: 'Temp', data: 'Data' }
+      }
+    };
 
     const units = {
       weight: {
         'lbs': { zh: '磅 (lbs)', en: 'Pounds (lbs)', toBase: x => x * 0.45359237, fromBase: x => x / 0.45359237 },
         'kg': { zh: '公斤 (kg)', en: 'Kilograms (kg)', toBase: x => x, fromBase: x => x },
-        'g': { zh: '克 (g)', en: 'Grams (g)', toBase: x => x / 1000, fromBase: x => x * 1000 }
+        'g': { zh: '克 (g)', en: 'Grams (g)', toBase: x => x / 1000, fromBase: x => x * 1000 },
+        'catty_hk': { zh: '香港斤 (司馬斤)', en: 'HK Catty', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 }
+      },
+      fx: {
+        'HKD': { zh: '港元 (HKD)', en: 'HKD' },
+        'USD': { zh: '美元 (USD)', en: 'USD' },
+        'JPY': { zh: '日圓 (JPY)', en: 'JPY' },
+        'EUR': { zh: '歐元 (EUR)', en: 'EUR' },
+        'GBP': { zh: '英鎊 (GBP)', en: 'GBP' },
+        'TWD': { zh: '新台幣 (TWD)', en: 'TWD' },
+        'CNY': { zh: '人民幣 (CNY)', en: 'CNY' }
+      },
+      gold: {
+        'oz_t': { zh: '國際金衡盎司 (USD oz t)', en: 'Gold Troy Oz (USD)' },
+        'tael_hk': { zh: '香港金行兩 (HKD 兩)', en: 'HK Gold Tael (HKD)' }
+      },
+      baking: {
+        'cup': { zh: '美制杯 (Cup)', en: 'US Cups' },
+        'ml': { zh: '毫升 (mL)', en: 'Milliliters' },
+        'g': { zh: '克 (g)', en: 'Grams' }
       },
       length: {
-        'm': { zh: '米 (m)', en: 'Meters (m)', toBase: x => x, fromBase: x => x },
-        'ft': { zh: '呎 (ft)', en: 'Feet (ft)', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 }
+        'm': { zh: '米 (m)', en: 'Meters', toBase: x => x, fromBase: x => x },
+        'cm': { zh: '厘米 (cm)', en: 'Centimeters', toBase: x => x / 100, fromBase: x => x * 100 },
+        'ft': { zh: '呎 (ft)', en: 'Feet', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 }
+      },
+      area: {
+        'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
+        'sqm': { zh: '平方米 (sq m)', en: 'Sq Meters', toBase: x => x, fromBase: x => x }
       },
       temp: {
         'C': { zh: '攝氏 (°C)', en: 'Celsius (°C)', toBase: x => x, fromBase: x => x },
         'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 }
       },
-      fx: {
-        'HKD': { zh: '港元 (HKD)', en: 'HKD' },
-        'USD': { zh: '美元 (USD)', en: 'USD' },
-        'GBP': { zh: '英鎊 (GBP)', en: 'GBP' },
-        'EUR': { zh: '歐元 (EUR)', en: 'EUR' }
-      },
       data: {
-        'MB': { zh: 'MB', en: 'MB', toBase: x => x, fromBase: x => x },
-        'GB': { zh: 'GB', en: 'GB', toBase: x => x * 1024, fromBase: x => x / 1024 }
+        'MB': { zh: 'Megabytes (MB)', en: 'MB', toBase: x => x, fromBase: x => x },
+        'GB': { zh: 'Gigabytes (GB)', en: 'GB', toBase: x => x * 1024, fromBase: x => x / 1024 }
       }
-    };
-
-    // 暴露 function 給 HTML onClick 事件使用
-    window.switchTab = function(tab) {
-      currentTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
-      document.getElementById(`tab-${tab}`).classList.add('tab-active');
-      populateSelects();
-      convert();
     };
 
     window.toggleLanguage = function() {
       lang = lang === 'zh' ? 'en' : 'zh';
       document.getElementById('langBtnText').innerText = lang === 'zh' ? 'EN' : '中文';
+      updateUIStrings();
       populateSelects();
       convert();
     };
 
-    window.convert = function() {
-      const val = parseFloat(document.getElementById('inputValue').value);
-      const from = document.getElementById('fromUnit').value;
-      const to = document.getElementById('toUnit').value;
-      const extraInfo = document.getElementById('extraInfo');
-      const resultEl = document.getElementById('result');
+    window.switchTab = function(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+      document.getElementById(`tab-${tab}`).classList.add('tab-active');
+      
+      // Show Baking selector group only in baking tab
+      document.getElementById('bakingSelectorGroup').className = tab === 'baking' ? 'block' : 'hidden';
 
-      if (isNaN(val) || !from || !to) {
-        resultEl.innerText = '---';
-        extraInfo.innerText = '';
-        return;
-      }
-
-      let res = 0;
-      if (currentTab === 'fx') {
-        const inHKD = val * (hkmaRates[from] || 1);
-        res = inHKD / (hkmaRates[to] || 1);
-        extraInfo.innerText = '💡 數據即時對接香港金管局 (HKMA) API';
-      } else {
-        const baseVal = units[currentTab][from].toBase(val);
-        res = units[currentTab][to].fromBase(baseVal);
-        
-        if (currentTab === 'temp' && liveTempC !== null) {
-          extraInfo.innerText = `🌡️ 天文台即時氣溫：${liveTempC}°C`;
-        } else {
-          extraInfo.innerText = '';
-        }
-      }
-
-      resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 4 });
+      populateSelects();
+      convert();
     };
+
+    function updateUIStrings() {
+      const t = i18n[lang];
+      document.getElementById('t-subtitle').innerText = t.subtitle;
+      document.getElementById('t-inputLabel').innerText = t.inputLabel;
+      document.getElementById('t-fromLabel').innerText = t.fromLabel;
+      document.getElementById('t-toLabel').innerText = t.toLabel;
+      document.getElementById('t-resultLabel').innerText = t.resultLabel;
+      document.getElementById('copyBtnText').innerText = t.copyBtn;
+
+      Object.keys(t.tabs).forEach(key => {
+        document.getElementById(`tab-${key}`).innerText = t.tabs[key];
+      });
+    }
 
     function populateSelects() {
       const fromSelect = document.getElementById('fromUnit');
@@ -173,22 +232,97 @@
       if (Object.keys(currentUnits).length > 1) toSelect.selectedIndex = 1;
     }
 
-    // 初始化 App 並非同步抓取外接 API
-    async function init() {
+    window.convert = function() {
+      const val = parseFloat(document.getElementById('inputValue').value);
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+      const extraInfo = document.getElementById('extraInfo');
+      const resultEl = document.getElementById('result');
+
+      if (isNaN(val) || !from || !to) {
+        resultEl.innerText = '---';
+        extraInfo.innerText = '';
+        return;
+      }
+
+      let res = 0;
+
+      // 1. Forex FX API Math
+      if (currentTab === 'fx') {
+        const hkdBase = from === 'HKD' ? val : val / (globalRates[from] || 1);
+        res = to === 'HKD' ? hkdBase : hkdBase * (globalRates[to] || 1);
+        extraInfo.innerText = '💡 數據即時對接 Frankfurter 全球匯率 API';
+      }
+      // 2. Gold API Math (Troy Oz USD <-> HK Gold Tael HKD)
+      else if (currentTab === 'gold') {
+        const usdToHkdRate = 7.82;
+        const taelPerOz = 0.8294; // 1 Troy Oz ≈ 0.8294 HK Tael
+        
+        if (from === 'oz_t' && to === 'tael_hk') {
+          res = (val * liveGoldUsdOz * usdToHkdRate) / taelPerOz;
+        } else if (from === 'tael_hk' && to === 'oz_t') {
+          res = (val * taelPerOz) / (liveGoldUsdOz * usdToHkdRate);
+        } else {
+          res = val;
+        }
+        extraInfo.innerText = `💡 當前國際即時黃金參考價: $${liveGoldUsdOz} USD/oz`;
+      }
+      // 3. Baking Density Math
+      else if (currentTab === 'baking') {
+        const foodType = document.getElementById('foodType').value;
+        const density = FOOD_DENSITY_MAP[foodType]?.densityGramsPerMl || 1.0;
+        
+        let volumeMl = from === 'cup' ? val * 240 : (from === 'g' ? val / density : val);
+        res = to === 'cup' ? volumeMl / 240 : (to === 'g' ? volumeMl * density : volumeMl);
+        extraInfo.innerText = '💡 USDA 權威食材物理密度資料庫計算';
+      }
+      // 4. General Physical Units
+      else {
+        const baseVal = units[currentTab][from].toBase(val);
+        res = units[currentTab][to].fromBase(baseVal);
+
+        if (currentTab === 'temp' && hkEnvData.temp !== null) {
+          extraInfo.innerText = `🌡️ 天文台即時：${hkEnvData.temp}°C | 濕度: ${hkEnvData.humidity}%`;
+        } else {
+          extraInfo.innerText = '';
+        }
+      }
+
+      resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 4 });
+    };
+
+    window.copyResult = function() {
+      const resText = document.getElementById('result').innerText;
+      if (resText === '---') return;
+      navigator.clipboard.writeText(resText).then(() => {
+        const btnText = document.getElementById('copyBtnText');
+        btnText.innerText = i18n[lang].copied;
+        setTimeout(() => { btnText.innerText = i18n[lang].copyBtn; }, 2000);
+      });
+    };
+
+    // Initialize App & Fetch Live API Data Parallelly
+    async function initApp() {
+      updateUIStrings();
       populateSelects();
       convert();
 
-      // 1. Fetch HKMA Exchange Rates
-      hkmaRates = await fetchHKMARates();
-      
-      // 2. Fetch HK Observatory Temperature
-      liveTempC = await fetchHKWeather();
+      // Async API Calls
+      try {
+        const loc = await fetchUserLocation();
+        document.getElementById('userLocationText').innerText = `📍 當前訪問地區: ${loc.countryName} (${loc.countryCode})`;
 
-      // API 數據載入後自動更新畫面
-      convert();
+        globalRates = await fetchGlobalRates('HKD');
+        liveGoldUsdOz = await fetchGoldPrice();
+        hkEnvData = await fetchHKEnvironmentData();
+
+        convert(); // Re-render result with live API data
+      } catch (err) {
+        console.warn('API Background Load complete with fallbacks');
+      }
     }
 
-    init();
+    initApp();
   </script>
 </body>
 </html>
