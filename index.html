@@ -29,7 +29,7 @@
         <h1 class="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
           秒換 SecUnit
         </h1>
-        <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">無廣告 · 零存儲 · 多重即時 API 支持</p>
+        <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">無廣告 · 零存儲 · 秒轉換</p>
       </div>
       <button onclick="toggleLanguage()" class="text-xs font-mono bg-slate-700 hover:bg-slate-600 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full transition active:scale-95">
         🌐 <span id="langBtnText">EN</span>
@@ -40,7 +40,7 @@
     <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-1.5 mb-5 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 text-center">
       <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition tab-active"></button>
       <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
-      <button onclick="switchTab('timezone')" id="tab-timezone" class="tab-btn py-2 text-xs font-medium rounded-xl text-amber-300 hover:text-amber-100 bg-amber-900/20 border border-amber-700/30 transition"></button>
+      <button onclick="switchTab('timezone')" id="tab-timezone" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('gold')" id="tab-gold" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('baking')" id="tab-baking" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       
@@ -114,14 +114,11 @@
   </main>
 
   <footer class="mt-6 text-center text-xs text-slate-500 space-y-1">
-    <p>SecUnit &copy; 2026 | Ad-free · 8 API Powered (Crypto, WorldTime, AQI)</p>
+    <p>SecUnit &copy; 2026 | 無廣告 · 零存儲 · 秒轉換</p>
     <p id="userLocationText" class="text-slate-600">偵測定位中...</p>
   </footer>
 
   <script>
-    // ==========================================
-    // 1. 所有 API 獲取函數 (內建於單一檔案)
-    // ==========================================
     async function fetchGlobalRates(baseCurrency = 'HKD') {
       try {
         const res = await fetch(`https://api.frankfurter.app/latest?from=${baseCurrency}`);
@@ -199,9 +196,6 @@
       butter: { densityGramsPerMl: 0.95 }, honey: { densityGramsPerMl: 1.42 }, water: { densityGramsPerMl: 1.0 }
     };
 
-    // ==========================================
-    // 2. 應用程式核心邏輯
-    // ==========================================
     let lang = 'zh';
     let currentTab = 'weight';
     let showRare = false; 
@@ -213,14 +207,14 @@
 
     const i18n = {
       zh: {
-        subtitle: '無廣告 · 零存儲 · 多重即時 API 支持',
+        subtitle: '無廣告 · 零存儲 · 秒轉換',
         inputLabel: '輸入數值 (如時區轉換 14 代表 14:00)',
         fromLabel: '由 (From)', toLabel: '轉至 (To)', resultLabel: '轉換結果',
         copyBtn: '📋 複製結果', copied: '✅ 已複製！', rareOn: '隱藏進階單位', rareOff: '顯示罕見/進階單位',
         tabs: { weight: '重量', fx: '匯率/加密幣', timezone: '時區', gold: '金價', baking: '烘焙', length: '長度', area: '面積', volume: '容量', temp: '天氣/氣壓', speed: '速度', time: '時間', data: '數據', energy: '能量', pressure: '壓力', power: '功率', fuel: '油耗', angle: '角度', force: '力', torque: '扭力' }
       },
       en: {
-        subtitle: 'Zero Ads · Zero Storage · 8 Live APIs',
+        subtitle: 'Zero Ads · Zero Storage · Instant Conversion',
         inputLabel: 'Value (e.g. 14 for 14:00 in Timezone)',
         fromLabel: 'From', toLabel: 'To', resultLabel: 'Result',
         copyBtn: '📋 Copy Result', copied: '✅ Copied!', rareOn: 'Hide Advanced Units', rareOff: 'Show Rare/Advanced Units',
@@ -495,7 +489,6 @@
       }
     }
 
-    // 將所有事件處理函數掛載到 window，讓 HTML 的 onclick 可以直接調用
     window.toggleLanguage = toggleLanguage;
     window.toggleRareUnits = toggleRareUnits;
     window.switchTab = switchTab;
