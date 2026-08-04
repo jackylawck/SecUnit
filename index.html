@@ -13,7 +13,7 @@
 <body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
 
   <!-- Main Container -->
-  <main class="max-w-lg w-full bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-2xl my-auto">
+  <main class="max-w-xl w-full bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-2xl my-auto">
     
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
@@ -31,11 +31,12 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="grid grid-cols-4 gap-1.5 mb-6 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50">
+    <div class="grid grid-cols-5 gap-1 mb-6 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50">
       <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active"></button>
+      <button onclick="switchTab('length')" id="tab-length" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('area')" id="tab-area" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
-      <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('data')" id="tab-data" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
     </div>
 
     <!-- Conversion Form -->
@@ -77,7 +78,6 @@
   <script>
     let lang = 'zh';
     let currentTab = 'weight';
-    let hkmaRates = { 'HKD': 1, 'USD': 7.8, 'GBP': 9.8, 'EUR': 8.5 };
 
     const i18n = {
       zh: {
@@ -88,7 +88,7 @@
         resultLabel: '轉換結果',
         copyBtn: '📋 複製結果',
         copied: '✅ 已複製！',
-        tabs: { weight: '重量', area: '面積/長度', temp: '溫度', fx: 'HKMA 匯率' }
+        tabs: { weight: '重量', length: '長度', area: '面積', temp: '溫度', data: '數據/網速' }
       },
       en: {
         subtitle: 'Ad-free · Offline Ready · HK Localized',
@@ -98,7 +98,7 @@
         resultLabel: 'Result',
         copyBtn: '📋 Copy Result',
         copied: '✅ Copied!',
-        tabs: { weight: 'Weight', area: 'Area/Length', temp: 'Temperature', fx: 'HKMA FX' }
+        tabs: { weight: 'Weight', length: 'Length', area: 'Area', temp: 'Temp', data: 'Data/Speed' }
       }
     };
 
@@ -107,22 +107,37 @@
         'lbs': { zh: '磅 (lbs)', en: 'Pounds (lbs)', toBase: x => x * 0.45359237, fromBase: x => x / 0.45359237 },
         'kg': { zh: '公斤 (kg)', en: 'Kilograms (kg)', toBase: x => x, fromBase: x => x },
         'g': { zh: '克 (g)', en: 'Grams (g)', toBase: x => x / 1000, fromBase: x => x * 1000 },
-        'catty_hk': { zh: '香港斤 (司馬斤)', en: 'HK Catty', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 }
+        'oz': { zh: '盎司 (oz)', en: 'Ounces (oz)', toBase: x => x * 0.0283495, fromBase: x => x / 0.0283495 },
+        'catty_hk': { zh: '香港斤 (司馬斤)', en: 'HK Catty', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 },
+        'tael_hk': { zh: '香港兩 (司馬兩)', en: 'HK Tael (Gold)', toBase: x => x * 0.037429, fromBase: x => x / 0.037429 },
+        'mace_hk': { zh: '香港錢 (司馬錢)', en: 'HK Mace', toBase: x => x * 0.0037429, fromBase: x => x / 0.0037429 },
+        'catty_cn': { zh: '市斤 (大陸斤)', en: 'CN Catty (500g)', toBase: x => x * 0.5, fromBase: x => x / 0.5 }
+      },
+      length: {
+        'm': { zh: '米 / 公尺 (m)', en: 'Meters (m)', toBase: x => x, fromBase: x => x },
+        'cm': { zh: '厘米 / 公分 (cm)', en: 'Centimeters (cm)', toBase: x => x / 100, fromBase: x => x * 100 },
+        'ft': { zh: '呎 / 英尺 (ft)', en: 'Feet (ft)', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 },
+        'in': { zh: '吋 / 吋 (in)', en: 'Inches (in)', toBase: x => x * 0.0254, fromBase: x => x / 0.0254 },
+        'km': { zh: '公里 (km)', en: 'Kilometers (km)', toBase: x => x * 1000, fromBase: x => x / 1000 },
+        'mile': { zh: '哩 / 英里 (mile)', en: 'Miles', toBase: x => x * 1609.344, fromBase: x => x / 1609.344 }
       },
       area: {
         'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet (sq ft)', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
         'sqm': { zh: '平方米 (sq m)', en: 'Sq Meters (sq m)', toBase: x => x, fromBase: x => x },
-        'ping': { zh: '台灣坪', en: 'Taiwan Ping', toBase: x => x * 3.305785, fromBase: x => x / 3.305785 }
+        'ping': { zh: '台灣坪', en: 'Taiwan Ping', toBase: x => x * 3.305785, fromBase: x => x / 3.305785 },
+        'hectare': { zh: '公頃 (ha)', en: 'Hectares (ha)', toBase: x => x * 10000, fromBase: x => x / 10000 }
       },
       temp: {
         'C': { zh: '攝氏 (°C)', en: 'Celsius (°C)', toBase: x => x, fromBase: x => x },
-        'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 }
+        'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 },
+        'K': { zh: '開氏度 (K)', en: 'Kelvin (K)', toBase: x => x - 273.15, fromBase: x => x + 273.15 }
       },
-      fx: {
-        'HKD': { zh: '港元 (HKD)', en: 'HKD' },
-        'USD': { zh: '美元 (USD)', en: 'USD' },
-        'GBP': { zh: '英鎊 (GBP)', en: 'GBP' },
-        'EUR': { zh: '歐元 (EUR)', en: 'EUR' }
+      data: {
+        'MB': { zh: 'Megabytes (MB)', en: 'Megabytes (MB)', toBase: x => x, fromBase: x => x },
+        'GB': { zh: 'Gigabytes (GB)', en: 'Gigabytes (GB)', toBase: x => x * 1024, fromBase: x => x / 1024 },
+        'TB': { zh: 'Terabytes (TB)', en: 'Terabytes (TB)', toBase: x => x * 1024 * 1024, fromBase: x => x / (1024 * 1024) },
+        'Mbps': { zh: '寬頻網絡 (Mbps)', en: 'Mbps (Network)', toBase: x => x / 8, fromBase: x => x * 8 },
+        'MBs': { zh: '實質下載速度 (MB/s)', en: 'MB/s (Download)', toBase: x => x, fromBase: x => x }
       }
     };
 
@@ -185,14 +200,8 @@
         return;
       }
 
-      let res = 0;
-      if (currentTab === 'fx') {
-        const inHKD = val * (hkmaRates[from] || 1);
-        res = inHKD / (hkmaRates[to] || 1);
-      } else {
-        const baseVal = units[currentTab][from].toBase(val);
-        res = units[currentTab][to].fromBase(baseVal);
-      }
+      const baseVal = units[currentTab][from].toBase(val);
+      const res = units[currentTab][to].fromBase(baseVal);
 
       resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 4 });
     }
