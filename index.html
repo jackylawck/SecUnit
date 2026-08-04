@@ -2,13 +2,12 @@
 <html lang="zh-HK">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <title>秒換 SecUnit - Instant Unit & API Converter</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
     .tab-active { background-color: #2563eb !important; color: #ffffff !important; font-weight: 700; }
-    /* 用於下拉選單更新時的提示動畫 */
     .flash-update {
       animation: flashCyan 0.6s ease-out;
     }
@@ -66,7 +65,7 @@
     <div class="space-y-4">
       <div>
         <label id="t-inputLabel" class="block text-xs font-medium text-slate-400 mb-1">輸入數值</label>
-        <input type="number" id="inputValue" value="1" step="any" oninput="convert()" 
+        <input type="number" id="inputValue" value="1" step="any" inputmode="decimal" oninput="convert()" 
                class="w-full bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-3 text-2xl font-mono font-bold text-white focus:outline-none transition">
       </div>
 
@@ -342,14 +341,11 @@
       
       populateSelects();
 
-      // 如果舊的選擇還存在於新清單中，就保留它
       if (Array.from(fromEl.options).some(opt => opt.value === oldFrom)) fromEl.value = oldFrom;
       if (Array.from(toEl.options).some(opt => opt.value === oldTo)) toEl.value = oldTo;
       
-      // 視覺動畫：下拉選單閃爍發光
       fromEl.classList.remove('flash-update');
       toEl.classList.remove('flash-update');
-      // Trigger reflow to restart animation
       void fromEl.offsetWidth;
       fromEl.classList.add('flash-update');
       toEl.classList.add('flash-update');
@@ -391,7 +387,7 @@
       const currentUnits = units[currentTab];
       Object.keys(currentUnits).forEach(key => {
         const u = currentUnits[key];
-        if (u.rare && !showRare) return; // 隱藏罕見單位
+        if (u.rare && !showRare) return;
 
         const label = u[lang];
         fromSelect.add(new Option(label, key));
@@ -456,7 +452,6 @@
       if (!isFinite(res)) {
         resultEl.innerText = '∞';
       } else {
-        // 對於極大或極小的科學數字，自動轉用科學記號
         if (Math.abs(res) < 0.0001 && res !== 0) {
           resultEl.innerText = res.toExponential(4);
         } else if (Math.abs(res) > 1e10) {
