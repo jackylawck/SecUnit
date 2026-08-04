@@ -29,25 +29,28 @@
       </button>
     </div>
 
-    <!-- Navigation Tabs (Responsive Grid for 15 Tabs) -->
-    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-1.5 mb-5 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 text-center">
+    <!-- Navigation Tabs (Responsive Grid for 18 Tabs: 3-col mobile, 4-col tablet, 6-col desktop) -->
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-1.5 mb-5 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 text-center">
       <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition tab-active"></button>
       <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('gold')" id="tab-gold" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('baking')" id="tab-baking" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('length')" id="tab-length" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
-      
       <button onclick="switchTab('area')" id="tab-area" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      
       <button onclick="switchTab('volume')" id="tab-volume" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('speed')" id="tab-speed" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('time')" id="tab-time" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
-      
       <button onclick="switchTab('data')" id="tab-data" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('energy')" id="tab-energy" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      
       <button onclick="switchTab('pressure')" id="tab-pressure" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('power')" id="tab-power" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('fuel')" id="tab-fuel" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('angle')" id="tab-angle" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('force')" id="tab-force" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('torque')" id="tab-torque" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
     </div>
 
     <!-- Conversion Form -->
@@ -130,7 +133,7 @@
         resultLabel: '轉換結果',
         copyBtn: '📋 複製結果',
         copied: '✅ 已複製！',
-        tabs: { weight: '重量', fx: '匯率', gold: '金價', baking: '烘焙', length: '長度', area: '面積', volume: '容量', temp: '溫度', speed: '速度', time: '時間', data: '數據', energy: '熱量/電量', pressure: '氣壓/壓力', power: '功率/冷氣', fuel: '油耗' }
+        tabs: { weight: '重量', fx: '匯率', gold: '金價', baking: '烘焙', length: '長度', area: '面積', volume: '容量', temp: '溫度', speed: '速度', time: '時間', data: '數據', energy: '熱量/電量', pressure: '壓力', power: '功率', fuel: '油耗', angle: '角度', force: '力', torque: '扭力' }
       },
       en: {
         subtitle: 'Zero Ads · Zero Storage · Instant Conversion',
@@ -140,7 +143,7 @@
         resultLabel: 'Result',
         copyBtn: '📋 Copy Result',
         copied: '✅ Copied!',
-        tabs: { weight: 'Weight', fx: 'FX', gold: 'Gold', baking: 'Baking', length: 'Length', area: 'Area', volume: 'Volume', temp: 'Temp', speed: 'Speed', time: 'Time', data: 'Data', energy: 'Energy', pressure: 'Pressure', power: 'Power', fuel: 'Fuel' }
+        tabs: { weight: 'Weight', fx: 'FX', gold: 'Gold', baking: 'Baking', length: 'Length', area: 'Area', volume: 'Volume', temp: 'Temp', speed: 'Speed', time: 'Time', data: 'Data', energy: 'Energy', pressure: 'Pressure', power: 'Power', fuel: 'Fuel', angle: 'Angle', force: 'Force', torque: 'Torque' }
       }
     };
 
@@ -152,6 +155,7 @@
         'mg': { zh: '毫克 (mg)', en: 'Milligrams (mg)', toBase: x => x / 1e6, fromBase: x => x * 1e6 },
         'oz': { zh: '盎司 (oz)', en: 'Ounces (oz)', toBase: x => x * 0.0283495, fromBase: x => x / 0.0283495 },
         'ct': { zh: '克拉 (ct/鑽石)', en: 'Carat (ct)', toBase: x => x * 0.0002, fromBase: x => x / 0.0002 },
+        'grain': { zh: '格令 (gr)', en: 'Grain (gr)', toBase: x => x * 0.0000647989, fromBase: x => x / 0.0000647989 },
         'ton': { zh: '公噸 (t)', en: 'Metric Ton (t)', toBase: x => x * 1000, fromBase: x => x / 1000 },
         'stone': { zh: '英石 (st)', en: 'Stone (st)', toBase: x => x * 6.35029, fromBase: x => x / 6.35029 },
         'catty_hk': { zh: '香港斤 (司馬斤)', en: 'HK Catty', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 },
@@ -186,12 +190,16 @@
         'm': { zh: '米 (m)', en: 'Meters', toBase: x => x, fromBase: x => x },
         'cm': { zh: '厘米 (cm)', en: 'Centimeters', toBase: x => x / 100, fromBase: x => x * 100 },
         'mm': { zh: '毫米 (mm)', en: 'Millimeters', toBase: x => x / 1000, fromBase: x => x * 1000 },
+        'um': { zh: '微米 (µm)', en: 'Micrometers (µm)', toBase: x => x / 1e6, fromBase: x => x * 1e6 },
+        'nm': { zh: '納米 (nm)', en: 'Nanometers (nm)', toBase: x => x / 1e9, fromBase: x => x * 1e9 },
         'km': { zh: '公里 (km)', en: 'Kilometers', toBase: x => x * 1000, fromBase: x => x / 1000 },
         'ft': { zh: '呎 (ft)', en: 'Feet', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 },
         'in': { zh: '吋 (in)', en: 'Inches', toBase: x => x * 0.0254, fromBase: x => x / 0.0254 },
         'yd': { zh: '碼 (yd)', en: 'Yards', toBase: x => x * 0.9144, fromBase: x => x / 0.9144 },
         'mile': { zh: '哩 (mile)', en: 'Miles', toBase: x => x * 1609.344, fromBase: x => x / 1609.344 },
-        'nmi': { zh: '海里 (nmi)', en: 'Nautical Miles', toBase: x => x * 1852, fromBase: x => x / 1852 }
+        'nmi': { zh: '海里 (nmi)', en: 'Nautical Miles', toBase: x => x * 1852, fromBase: x => x / 1852 },
+        'ly': { zh: '光年 (ly)', en: 'Light Years (ly)', toBase: x => x * 9.4607e15, fromBase: x => x / 9.4607e15 },
+        'au': { zh: '天文單位 (AU)', en: 'Astronomical Unit', toBase: x => x * 1.4959787e11, fromBase: x => x / 1.4959787e11 }
       },
       area: {
         'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
@@ -205,13 +213,14 @@
         'L': { zh: '升 (L)', en: 'Liters', toBase: x => x, fromBase: x => x },
         'mL': { zh: '毫升 (mL)', en: 'Milliliters', toBase: x => x / 1000, fromBase: x => x * 1000 },
         'm3': { zh: '立方米 (m³)', en: 'Cubic Meters', toBase: x => x * 1000, fromBase: x => x / 1000 },
+        'ft3': { zh: '立方呎 (ft³)', en: 'Cubic Feet', toBase: x => x * 28.3168, fromBase: x => x / 28.3168 },
+        'in3': { zh: '立方吋 (in³)', en: 'Cubic Inches', toBase: x => x * 0.0163871, fromBase: x => x / 0.0163871 },
         'gal_us': { zh: '美制加侖 (US gal)', en: 'US Gallons', toBase: x => x * 3.78541, fromBase: x => x / 3.78541 },
         'gal_uk': { zh: '英制加侖 (UK gal)', en: 'UK Gallons', toBase: x => x * 4.54609, fromBase: x => x / 4.54609 },
-        'pt_uk': { zh: '英制品脫 (UK pt/酒吧)', en: 'UK Pint', toBase: x => x * 0.568261, fromBase: x => x / 0.568261 },
+        'bbl': { zh: '石油桶 (bbl)', en: 'Oil Barrel (bbl)', toBase: x => x * 158.987, fromBase: x => x / 158.987 },
+        'pt_uk': { zh: '英制品脫 (UK pt)', en: 'UK Pint', toBase: x => x * 0.568261, fromBase: x => x / 0.568261 },
         'pt_us': { zh: '美制品脫 (US pt)', en: 'US Pint', toBase: x => x * 0.473176, fromBase: x => x / 0.473176 },
-        'floz': { zh: '液體盎司 (fl oz)', en: 'Fluid Oz', toBase: x => x * 0.0295735, fromBase: x => x / 0.0295735 },
-        'tbsp': { zh: '湯匙 (tbsp)', en: 'Tablespoons', toBase: x => x * 0.0147868, fromBase: x => x / 0.0147868 },
-        'tsp': { zh: '茶匙 (tsp)', en: 'Teaspoons', toBase: x => x * 0.00492892, fromBase: x => x / 0.00492892 }
+        'floz': { zh: '液體盎司 (fl oz)', en: 'Fluid Oz', toBase: x => x * 0.0295735, fromBase: x => x / 0.0295735 }
       },
       temp: {
         'C': { zh: '攝氏 (°C)', en: 'Celsius (°C)', toBase: x => x, fromBase: x => x },
@@ -226,7 +235,9 @@
       },
       time: {
         's': { zh: '秒 (s)', en: 'Seconds', toBase: x => x, fromBase: x => x },
-        'ms': { zh: '毫秒 (ms)', en: 'Milliseconds', toBase: x => x / 1000, fromBase: x => x * 1000 },
+        'ms': { zh: '毫秒 (ms)', en: 'Milliseconds', toBase: x => x / 1e3, fromBase: x => x * 1e3 },
+        'us': { zh: '微秒 (µs)', en: 'Microseconds', toBase: x => x / 1e6, fromBase: x => x * 1e6 },
+        'ns': { zh: '納秒 (ns)', en: 'Nanoseconds', toBase: x => x / 1e9, fromBase: x => x * 1e9 },
         'min': { zh: '分鐘 (min)', en: 'Minutes', toBase: x => x * 60, fromBase: x => x / 60 },
         'hr': { zh: '小時 (hr)', en: 'Hours', toBase: x => x * 3600, fromBase: x => x / 3600 },
         'day': { zh: '天 (day)', en: 'Days', toBase: x => x * 86400, fromBase: x => x / 86400 },
@@ -234,9 +245,11 @@
         'yr': { zh: '年 (365天)', en: 'Years', toBase: x => x * 31536000, fromBase: x => x / 31536000 }
       },
       data: {
+        'KB': { zh: 'Kilobytes (KB)', en: 'KB', toBase: x => x / 1024, fromBase: x => x * 1024 },
         'MB': { zh: 'Megabytes (MB)', en: 'MB', toBase: x => x, fromBase: x => x },
         'GB': { zh: 'Gigabytes (GB)', en: 'GB', toBase: x => x * 1024, fromBase: x => x / 1024 },
-        'TB': { zh: 'Terabytes (TB)', en: 'TB', toBase: x => x * 1024 * 1024, fromBase: x => x / (1024 * 1024) },
+        'TB': { zh: 'Terabytes (TB)', en: 'TB', toBase: x => x * Math.pow(1024, 2), fromBase: x => x / Math.pow(1024, 2) },
+        'PB': { zh: 'Petabytes (PB)', en: 'PB', toBase: x => x * Math.pow(1024, 3), fromBase: x => x / Math.pow(1024, 3) },
         'Mbps': { zh: '寬頻網速 (Mbps)', en: 'Mbps', toBase: x => x / 8, fromBase: x => x * 8 },
         'MBs': { zh: '下載速度 (MB/s)', en: 'MB/s', toBase: x => x, fromBase: x => x }
       },
@@ -265,6 +278,23 @@
         'L100km': { zh: '升/100公里 (L/100km)', en: 'L/100km', toBase: x => x === 0 ? 0 : 100 / x, fromBase: x => x === 0 ? 0 : 100 / x },
         'mpg_us': { zh: '英里/美加侖 (MPG US)', en: 'MPG (US)', toBase: x => x * 0.425144, fromBase: x => x / 0.425144 },
         'mpg_uk': { zh: '英里/英加侖 (MPG UK)', en: 'MPG (UK)', toBase: x => x * 0.354006, fromBase: x => x / 0.354006 }
+      },
+      angle: {
+        'deg': { zh: '度 (Degree °)', en: 'Degree (°)', toBase: x => x, fromBase: x => x },
+        'rad': { zh: '弧度 (Radian)', en: 'Radian (rad)', toBase: x => x * (180 / Math.PI), fromBase: x => x * (Math.PI / 180) },
+        'grad': { zh: '百分度 (Gradian)', en: 'Gradian (grad)', toBase: x => x * 0.9, fromBase: x => x / 0.9 },
+        'arcmin': { zh: '角分 (Arcminute \')', en: 'Arcminute (\')', toBase: x => x / 60, fromBase: x => x * 60 },
+        'arcsec': { zh: '角秒 (Arcsecond \")', en: 'Arcsecond (\")', toBase: x => x / 3600, fromBase: x => x * 3600 }
+      },
+      force: {
+        'N': { zh: '牛頓 (Newton N)', en: 'Newton (N)', toBase: x => x, fromBase: x => x },
+        'kgf': { zh: '公斤力 (kgf)', en: 'Kilogram-force (kgf)', toBase: x => x * 9.80665, fromBase: x => x / 9.80665 },
+        'lbf': { zh: '磅力 (lbf)', en: 'Pound-force (lbf)', toBase: x => x * 4.448222, fromBase: x => x / 4.448222 }
+      },
+      torque: {
+        'Nm': { zh: '牛頓米 (N·m)', en: 'Newton-meter (Nm)', toBase: x => x, fromBase: x => x },
+        'kgm': { zh: '公斤米 (kg-m)', en: 'Kilogram-meter (kg-m)', toBase: x => x * 9.80665, fromBase: x => x / 9.80665 },
+        'lbft': { zh: '磅呎 (lb-ft)', en: 'Pound-foot (lb-ft)', toBase: x => x * 1.355818, fromBase: x => x / 1.355818 }
       }
     };
 
@@ -369,7 +399,7 @@
       if (!isFinite(res)) {
         resultEl.innerText = '∞';
       } else {
-        resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 4 });
+        resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 6 });
       }
     };
 
