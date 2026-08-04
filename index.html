@@ -8,6 +8,15 @@
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
     .tab-active { background-color: #2563eb !important; color: #ffffff !important; font-weight: 700; }
+    /* 用於下拉選單更新時的提示動畫 */
+    .flash-update {
+      animation: flashCyan 0.6s ease-out;
+    }
+    @keyframes flashCyan {
+      0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); border-color: #06b6d4; }
+      70% { box-shadow: 0 0 0 6px rgba(6, 182, 212, 0); border-color: #3b82f6; }
+      100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); border-color: #334155; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
@@ -63,7 +72,7 @@
 
       <!-- Toggle Advanced Units -->
       <div class="flex justify-end">
-        <button onclick="toggleRareUnits()" class="text-xs font-medium text-slate-400 hover:text-cyan-400 transition flex items-center gap-1 bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-lg">
+        <button onclick="toggleRareUnits()" id="rareToggleBtn" class="text-xs font-medium text-slate-400 hover:text-cyan-400 transition flex items-center gap-1 bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-lg active:scale-95">
           <span id="rareToggleIcon">👀</span> <span id="t-rareToggle">顯示罕見/進階單位</span>
         </button>
       </div>
@@ -83,11 +92,11 @@
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label id="t-fromLabel" class="block text-xs font-medium text-slate-400 mb-1">由 (From)</label>
-          <select id="fromUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition"></select>
+          <select id="fromUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none transition"></select>
         </div>
         <div>
           <label id="t-toLabel" class="block text-xs font-medium text-slate-400 mb-1">轉至 (To)</label>
-          <select id="toUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition"></select>
+          <select id="toUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none transition"></select>
         </div>
       </div>
 
@@ -120,7 +129,7 @@
 
     let lang = 'zh';
     let currentTab = 'weight';
-    let showRare = false; // 控制是否顯示罕見單位
+    let showRare = false; 
 
     let globalRates = {
       'HKD': 1, 'USD': 0.128, 'JPY': 19.2, 'EUR': 0.118, 'GBP': 0.101, 'TWD': 4.15, 'CNY': 0.92,
@@ -159,7 +168,6 @@
       }
     };
 
-    // 加入 `rare: true` 代表是不常見/進階的單位，預設會被隱藏
     const units = {
       weight: {
         'kg': { zh: '公斤 (kg)', en: 'Kilograms (kg)', toBase: x => x, fromBase: x => x },
@@ -173,8 +181,10 @@
         'ct': { zh: '克拉 (ct/鑽石)', en: 'Carat (ct)', rare: true, toBase: x => x * 0.0002, fromBase: x => x / 0.0002 },
         'grain': { zh: '格令 (gr)', en: 'Grain (gr)', rare: true, toBase: x => x * 0.0000647989, fromBase: x => x / 0.0000647989 },
         'stone': { zh: '英石 (st)', en: 'Stone (st)', rare: true, toBase: x => x * 6.35029, fromBase: x => x / 6.35029 },
-        'solar': { zh: '太陽質量 (M☉)', en: 'Solar Mass (M☉)', rare: true, toBase: x => x * 1.98847e30, fromBase: x => x / 1.98847e30 },
-        'amu': { zh: '原子質量單位 (amu)', en: 'Atomic Mass (u)', rare: true, toBase: x => x * 1.660539e-27, fromBase: x => x / 1.660539e-27 }
+        'earth': { zh: '地球質量 (M⊕)', en: 'Earth Mass', rare: true, toBase: x => x * 5.9722e24, fromBase: x => x / 5.9722e24 },
+        'jupiter': { zh: '木星質量 (MJ)', en: 'Jupiter Mass', rare: true, toBase: x => x * 1.898e27, fromBase: x => x / 1.898e27 },
+        'solar': { zh: '太陽質量 (M☉)', en: 'Solar Mass', rare: true, toBase: x => x * 1.98847e30, fromBase: x => x / 1.98847e30 },
+        'planck_mass': { zh: '普朗克質量 (mP)', en: 'Planck Mass', rare: true, toBase: x => x * 2.176434e-8, fromBase: x => x / 2.176434e-8 }
       },
       fx: {
         'HKD': { zh: '港元 (HKD)', en: 'HKD' },
@@ -192,8 +202,7 @@
         'MYR': { zh: '馬來西亞文吉 (MYR)', en: 'MYR', rare: true },
         'VND': { zh: '越南盾 (VND)', en: 'VND', rare: true },
         'NZD': { zh: '紐西蘭元 (NZD)', en: 'NZD', rare: true },
-        'CHF': { zh: '瑞士法郎 (CHF)', en: 'CHF', rare: true },
-        'AED': { zh: '阿聯酋迪拉姆 (AED)', en: 'AED', rare: true }
+        'CHF': { zh: '瑞士法郎 (CHF)', en: 'CHF', rare: true }
       },
       gold: {
         'oz_t': { zh: '國際金衡盎司 (USD oz t)', en: 'Gold Troy Oz (USD)' },
@@ -211,14 +220,14 @@
         'ft': { zh: '呎 (ft)', en: 'Feet', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 },
         'in': { zh: '吋 (in)', en: 'Inches', toBase: x => x * 0.0254, fromBase: x => x / 0.0254 },
         'mile': { zh: '哩 (mile)', en: 'Miles', toBase: x => x * 1609.344, fromBase: x => x / 1609.344 },
-        'yd': { zh: '碼 (yd)', en: 'Yards', toBase: x => x * 0.9144, fromBase: x => x / 0.9144 },
         'mm': { zh: '毫米 (mm)', en: 'Millimeters', rare: true, toBase: x => x / 1000, fromBase: x => x * 1000 },
         'um': { zh: '微米 (µm)', en: 'Micrometers (µm)', rare: true, toBase: x => x / 1e6, fromBase: x => x * 1e6 },
         'nm': { zh: '納米 (nm)', en: 'Nanometers (nm)', rare: true, toBase: x => x / 1e9, fromBase: x => x * 1e9 },
         'nmi': { zh: '海里 (nmi)', en: 'Nautical Miles', rare: true, toBase: x => x * 1852, fromBase: x => x / 1852 },
         'ly': { zh: '光年 (ly)', en: 'Light Years (ly)', rare: true, toBase: x => x * 9.4607e15, fromBase: x => x / 9.4607e15 },
         'au': { zh: '天文單位 (AU)', en: 'Astronomical Unit', rare: true, toBase: x => x * 1.4959787e11, fromBase: x => x / 1.4959787e11 },
-        'pc': { zh: '秒差距 (pc)', en: 'Parsec (pc)', rare: true, toBase: x => x * 3.0856776e16, fromBase: x => x / 3.0856776e16 }
+        'smoot': { zh: '斯穆特 (Smoot/MIT趣味)', en: 'Smoot (MIT)', rare: true, toBase: x => x * 1.7018, fromBase: x => x / 1.7018 },
+        'planck_length': { zh: '普朗克長度 (ℓP)', en: 'Planck Length', rare: true, toBase: x => x * 1.616255e-35, fromBase: x => x / 1.616255e-35 }
       },
       area: {
         'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
@@ -227,31 +236,28 @@
         'ha': { zh: '公頃 (ha)', en: 'Hectares', toBase: x => x * 10000, fromBase: x => x / 10000 },
         'acre': { zh: '英畝 (acre)', en: 'Acres', toBase: x => x * 4046.856, fromBase: x => x / 4046.856 },
         'ping': { zh: '台灣坪', en: 'Taiwan Ping', toBase: x => x * 3.305785, fromBase: x => x / 3.305785 },
-        'sqin': { zh: '平方吋 (sq in)', en: 'Sq Inches', rare: true, toBase: x => x * 0.00064516, fromBase: x => x / 0.00064516 }
+        'wales': { zh: '威爾斯大小 (趣味)', en: 'Size of Wales', rare: true, toBase: x => x * 20779000000, fromBase: x => x / 20779000000 }
       },
       volume: {
         'L': { zh: '升 (L)', en: 'Liters', toBase: x => x, fromBase: x => x },
         'mL': { zh: '毫升 (mL)', en: 'Milliliters', toBase: x => x / 1000, fromBase: x => x * 1000 },
-        'm3': { zh: '立方米 (m³)', en: 'Cubic Meters', toBase: x => x * 1000, fromBase: x => x / 1000 },
         'gal_us': { zh: '美制加侖 (US gal)', en: 'US Gallons', toBase: x => x * 3.78541, fromBase: x => x / 3.78541 },
         'floz': { zh: '液體盎司 (fl oz)', en: 'Fluid Oz', toBase: x => x * 0.0295735, fromBase: x => x / 0.0295735 },
-        'ft3': { zh: '立方呎 (ft³)', en: 'Cubic Feet', rare: true, toBase: x => x * 28.3168, fromBase: x => x / 28.3168 },
         'bbl': { zh: '石油桶 (bbl)', en: 'Oil Barrel (bbl)', rare: true, toBase: x => x * 158.987, fromBase: x => x / 158.987 },
-        'pt_uk': { zh: '英制品脫 (UK pt)', en: 'UK Pint', rare: true, toBase: x => x * 0.568261, fromBase: x => x / 0.568261 },
+        'olympic_pool': { zh: '奧運標準泳池', en: 'Olympic Pool', rare: true, toBase: x => x * 2500000, fromBase: x => x / 2500000 },
         'drop': { zh: '滴 (Drop)', en: 'Drop', rare: true, toBase: x => x * 0.00005, fromBase: x => x / 0.00005 }
       },
       temp: {
         'C': { zh: '攝氏 (°C)', en: 'Celsius (°C)', toBase: x => x, fromBase: x => x },
         'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 },
-        'K': { zh: '開氏度 (K)', en: 'Kelvin (K)', rare: true, toBase: x => x - 273.15, fromBase: x => x + 273.15 },
-        'R': { zh: '蘭金度 (°R)', en: 'Rankine (°R)', rare: true, toBase: x => (x - 491.67) * 5/9, fromBase: x => (x * 9/5) + 491.67 }
+        'K': { zh: '開氏度 (K)', en: 'Kelvin (K)', rare: true, toBase: x => x - 273.15, fromBase: x => x + 273.15 }
       },
       speed: {
         'kmh': { zh: '公里/小時 (km/h)', en: 'km/h', toBase: x => x / 3.6, fromBase: x => x * 3.6 },
         'mph': { zh: '英里/小時 (mph)', en: 'mph', toBase: x => x * 0.44704, fromBase: x => x / 0.44704 },
         'ms': { zh: '米/秒 (m/s)', en: 'm/s', toBase: x => x, fromBase: x => x },
         'knot': { zh: '節 / 海里 (Knots)', en: 'Knots', rare: true, toBase: x => x * 0.514444, fromBase: x => x / 0.514444 },
-        'mach': { zh: '馬赫 (Mach)', en: 'Mach', rare: true, toBase: x => x * 340.3, fromBase: x => x / 340.3 },
+        'mach': { zh: '馬赫/音速 (Mach)', en: 'Speed of Sound', rare: true, toBase: x => x * 340.3, fromBase: x => x / 340.3 },
         'c': { zh: '光速 (c)', en: 'Speed of Light (c)', rare: true, toBase: x => x * 299792458, fromBase: x => x / 299792458 }
       },
       time: {
@@ -261,9 +267,12 @@
         'wk': { zh: '星期 (wk)', en: 'Weeks', toBase: x => x * 604800, fromBase: x => x / 604800 },
         'yr': { zh: '年 (365天)', en: 'Years', toBase: x => x * 31536000, fromBase: x => x / 31536000 },
         's': { zh: '秒 (s)', en: 'Seconds', toBase: x => x, fromBase: x => x },
+        'xun': { zh: '旬 (10日)', en: '10 Days', rare: true, toBase: x => x * 864000, fromBase: x => x / 864000 },
+        'fortnight': { zh: '十四日 (Fortnight)', en: 'Fortnight', rare: true, toBase: x => x * 1209600, fromBase: x => x / 1209600 },
+        'lunar_month': { zh: '朔望月 (農曆月)', en: 'Lunar Month', rare: true, toBase: x => x * 2551442.976, fromBase: x => x / 2551442.976 },
         'ms': { zh: '毫秒 (ms)', en: 'Milliseconds', rare: true, toBase: x => x / 1e3, fromBase: x => x * 1e3 },
         'ns': { zh: '納秒 (ns)', en: 'Nanoseconds', rare: true, toBase: x => x / 1e9, fromBase: x => x * 1e9 },
-        'century': { zh: '世紀 (Century)', en: 'Century', rare: true, toBase: x => x * 3153600000, fromBase: x => x / 3153600000 }
+        'planck_time': { zh: '普朗克時間 (tP)', en: 'Planck Time', rare: true, toBase: x => x * 5.391247e-44, fromBase: x => x / 5.391247e-44 }
       },
       data: {
         'MB': { zh: 'Megabytes (MB)', en: 'MB', toBase: x => x, fromBase: x => x },
@@ -272,21 +281,19 @@
         'Mbps': { zh: '寬頻網速 (Mbps)', en: 'Mbps', toBase: x => x / 8, fromBase: x => x * 8 },
         'MBs': { zh: '下載速度 (MB/s)', en: 'MB/s', toBase: x => x, fromBase: x => x },
         'KB': { zh: 'Kilobytes (KB)', en: 'KB', rare: true, toBase: x => x / 1024, fromBase: x => x * 1024 },
+        'nibble': { zh: '半字節 (Nibble)', en: 'Nibble (4 bits)', rare: true, toBase: x => x / 2097152, fromBase: x => x * 2097152 },
         'PB': { zh: 'Petabytes (PB)', en: 'PB', rare: true, toBase: x => x * Math.pow(1024, 3), fromBase: x => x / Math.pow(1024, 3) }
       },
       energy: {
         'kcal': { zh: '千卡/大卡 (kcal)', en: 'Kilocalories', toBase: x => x, fromBase: x => x },
         'kJ': { zh: '千焦耳 (kJ)', en: 'Kilojoules', toBase: x => x / 4.184, fromBase: x => x * 4.184 },
-        'kWh': { zh: '電費度數 (kWh)', en: 'Kilowatt Hours', toBase: x => x * 860.421, fromBase: x => x / 860.421 },
-        'eV': { zh: '電子伏特 (eV)', en: 'Electronvolt (eV)', rare: true, toBase: x => x * 3.8267e-23, fromBase: x => x / 3.8267e-23 }
+        'kWh': { zh: '電費度數 (kWh)', en: 'Kilowatt Hours', toBase: x => x * 860.421, fromBase: x => x / 860.421 }
       },
       pressure: {
         'hPa': { zh: '百帕 (hPa/天文台)', en: 'Hectopascal', toBase: x => x * 100, fromBase: x => x / 100 },
         'psi': { zh: '磅力/平方吋 (psi/車胎)', en: 'PSI', toBase: x => x * 6894.76, fromBase: x => x / 6894.76 },
         'atm': { zh: '標準大氣壓 (atm)', en: 'Atmosphere', toBase: x => x * 101325, fromBase: x => x / 101325 },
-        'mmHg': { zh: '毫米汞柱 (mmHg/血壓)', en: 'mmHg', toBase: x => x * 133.322, fromBase: x => x / 133.322 },
-        'Pa': { zh: '帕斯卡 (Pa)', en: 'Pascal (Pa)', rare: true, toBase: x => x, fromBase: x => x },
-        'bar': { zh: '巴 (bar)', en: 'Bar', rare: true, toBase: x => x * 100000, fromBase: x => x / 100000 }
+        'mmHg': { zh: '毫米汞柱 (mmHg/血壓)', en: 'mmHg', toBase: x => x * 133.322, fromBase: x => x / 133.322 }
       },
       power: {
         'W': { zh: '瓦特 (W)', en: 'Watt (W)', toBase: x => x, fromBase: x => x },
@@ -296,15 +303,11 @@
       },
       fuel: {
         'kmL': { zh: '公里/升 (km/L)', en: 'km/L', toBase: x => x, fromBase: x => x },
-        'L100km': { zh: '升/100公里 (L/100km)', en: 'L/100km', toBase: x => x === 0 ? 0 : 100 / x, fromBase: x => x === 0 ? 0 : 100 / x },
-        'mpg_us': { zh: '英里/美加侖 (MPG US)', en: 'MPG (US)', rare: true, toBase: x => x * 0.425144, fromBase: x => x / 0.425144 },
-        'mpg_uk': { zh: '英里/英加侖 (MPG UK)', en: 'MPG (UK)', rare: true, toBase: x => x * 0.354006, fromBase: x => x / 0.354006 }
+        'L100km': { zh: '升/100公里 (L/100km)', en: 'L/100km', toBase: x => x === 0 ? 0 : 100 / x, fromBase: x => x === 0 ? 0 : 100 / x }
       },
       angle: {
         'deg': { zh: '度 (Degree °)', en: 'Degree (°)', toBase: x => x, fromBase: x => x },
-        'rad': { zh: '弧度 (Radian)', en: 'Radian (rad)', toBase: x => x * (180 / Math.PI), fromBase: x => x * (Math.PI / 180) },
-        'grad': { zh: '百分度 (Gradian)', en: 'Gradian (grad)', rare: true, toBase: x => x * 0.9, fromBase: x => x / 0.9 },
-        'arcmin': { zh: '角分 (Arcminute \')', en: 'Arcminute (\')', rare: true, toBase: x => x / 60, fromBase: x => x * 60 }
+        'rad': { zh: '弧度 (Radian)', en: 'Radian (rad)', toBase: x => x * (180 / Math.PI), fromBase: x => x * (Math.PI / 180) }
       },
       force: {
         'N': { zh: '牛頓 (Newton N)', en: 'Newton (N)', toBase: x => x, fromBase: x => x },
@@ -332,16 +335,25 @@
       document.getElementById('t-rareToggle').innerText = showRare ? t.rareOn : t.rareOff;
       document.getElementById('rareToggleIcon').innerText = showRare ? '🙈' : '👀';
       
-      // 記住當前選擇
-      const oldFrom = document.getElementById('fromUnit').value;
-      const oldTo = document.getElementById('toUnit').value;
+      const fromEl = document.getElementById('fromUnit');
+      const toEl = document.getElementById('toUnit');
+      const oldFrom = fromEl.value;
+      const oldTo = toEl.value;
       
       populateSelects();
 
-      // 嘗試恢復之前的選擇
-      if (document.querySelector(`#fromUnit option[value="${oldFrom}"]`)) document.getElementById('fromUnit').value = oldFrom;
-      if (document.querySelector(`#toUnit option[value="${oldTo}"]`)) document.getElementById('toUnit').value = oldTo;
+      // 如果舊的選擇還存在於新清單中，就保留它
+      if (Array.from(fromEl.options).some(opt => opt.value === oldFrom)) fromEl.value = oldFrom;
+      if (Array.from(toEl.options).some(opt => opt.value === oldTo)) toEl.value = oldTo;
       
+      // 視覺動畫：下拉選單閃爍發光
+      fromEl.classList.remove('flash-update');
+      toEl.classList.remove('flash-update');
+      // Trigger reflow to restart animation
+      void fromEl.offsetWidth;
+      fromEl.classList.add('flash-update');
+      toEl.classList.add('flash-update');
+
       convert();
     };
 
@@ -379,8 +391,7 @@
       const currentUnits = units[currentTab];
       Object.keys(currentUnits).forEach(key => {
         const u = currentUnits[key];
-        // 如果這個單位是 rare (罕見)，而且使用者沒有開啟 showRare，就略過不顯示
-        if (u.rare && !showRare) return;
+        if (u.rare && !showRare) return; // 隱藏罕見單位
 
         const label = u[lang];
         fromSelect.add(new Option(label, key));
@@ -445,10 +456,10 @@
       if (!isFinite(res)) {
         resultEl.innerText = '∞';
       } else {
-        // 使用更精密的科學記號或小數點呈現
-        if (res < 0.0001 && res > 0) {
+        // 對於極大或極小的科學數字，自動轉用科學記號
+        if (Math.abs(res) < 0.0001 && res !== 0) {
           resultEl.innerText = res.toExponential(4);
-        } else if (res > 1e9) {
+        } else if (Math.abs(res) > 1e10) {
           resultEl.innerText = res.toExponential(4);
         } else {
           resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 6 });
