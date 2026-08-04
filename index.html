@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>秒換 SecUnit - 極速單位與數據轉換</title>
-  <!-- Tailwind CSS CDN -->
+  <title>秒換 SecUnit - Instant Unit & Data Converter</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
@@ -22,63 +21,57 @@
         <h1 class="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
           秒換 SecUnit
         </h1>
-        <p class="text-xs text-slate-400 mt-0.5">零廣告 · 離線可用 · 香港在地化</p>
+        <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">零廣告 · 離線可用 · 香港在地化</p>
       </div>
-      <span class="text-xs font-mono bg-slate-700/80 text-cyan-300 border border-cyan-500/30 px-2.5 py-1 rounded-full">
-        v1.0 MVP
-      </span>
+      
+      <!-- Language Toggle Button -->
+      <button onclick="toggleLanguage()" class="text-xs font-mono bg-slate-700 hover:bg-slate-600 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full transition active:scale-95">
+        🌐 <span id="langBtnText">EN</span>
+      </button>
     </div>
 
-    <!-- Smart Natural Language Input -->
+    <!-- Smart Input -->
     <div class="mb-6">
-      <label class="block text-xs font-medium text-slate-300 mb-1.5">
+      <label id="t-smartLabel" class="block text-xs font-medium text-slate-300 mb-1.5">
         🔍 智能速換 (例如: <span class="text-cyan-400 cursor-pointer" onclick="fillSmart('150 lbs to kg')">150 lbs to kg</span>, <span class="text-cyan-400 cursor-pointer" onclick="fillSmart('500 sqft to sqm')">500 sqft to sqm</span>)
       </label>
-      <input type="text" id="smartInput" oninput="handleSmartInput()" placeholder="輸入「100 呎轉米」或「80 f to c」..." 
+      <input type="text" id="smartInput" oninput="handleSmartInput()" placeholder="100 sqft to sqm / 80 f to c..." 
              class="w-full bg-slate-900/90 border border-slate-700 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none transition">
-    </div>
-
-    <div class="relative my-4">
-      <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-700/60"></div></div>
-      <div class="relative flex justify-center text-xs"><span class="bg-slate-800 px-3 text-slate-500">或手動選擇類別</span></div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="grid grid-cols-4 gap-1.5 mb-6 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50">
-      <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active">重量</button>
-      <button onclick="switchTab('area')" id="tab-area" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">面積/長度</button>
-      <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">溫度</button>
-      <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition">HKMA 匯率</button>
+      <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition tab-active"></button>
+      <button onclick="switchTab('area')" id="tab-area" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition"></button>
     </div>
 
     <!-- Conversion Form -->
     <div class="space-y-4">
       <div>
-        <label class="block text-xs font-medium text-slate-400 mb-1">輸入數值</label>
+        <label id="t-inputLabel" class="block text-xs font-medium text-slate-400 mb-1">輸入數值</label>
         <input type="number" id="inputValue" value="1" step="any" oninput="convert()" 
                class="w-full bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-3 text-2xl font-mono font-bold text-white focus:outline-none transition">
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">由 (From)</label>
+          <label id="t-fromLabel" class="block text-xs font-medium text-slate-400 mb-1">由 (From)</label>
           <select id="fromUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition"></select>
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">轉至 (To)</label>
+          <label id="t-toLabel" class="block text-xs font-medium text-slate-400 mb-1">轉至 (To)</label>
           <select id="toUnit" onchange="convert()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition"></select>
         </div>
       </div>
 
       <!-- Result Card -->
       <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-700/80 rounded-2xl p-5 mt-6 text-center relative group">
-        <div class="text-xs text-slate-400 font-medium mb-1">轉換結果</div>
+        <div id="t-resultLabel" class="text-xs text-slate-400 font-medium mb-1">轉換結果</div>
         <div id="result" class="text-3xl sm:text-4xl font-extrabold font-mono text-cyan-400 tracking-tight break-all">---</div>
-        
-        <!-- Context / Live API Info -->
         <div id="extraInfo" class="text-xs text-slate-400 mt-2 font-light min-h-[1rem]"></div>
 
-        <!-- Copy Button -->
         <button onclick="copyResult()" class="mt-3 inline-flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-lg transition active:scale-95">
           <span id="copyBtnText">📋 複製結果</span>
         </button>
@@ -86,42 +79,87 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="mt-6 text-center text-xs text-slate-500 space-y-1">
-    <p>SecUnit &copy; 2026 | 純淨無廣告 · 專為香港地道情境設計</p>
-    <p class="text-slate-600">數據來源：香港金管局 (HKMA) API & 香港天文台 Open Data</p>
+    <p>SecUnit &copy; 2026 | Pure & Ad-free · HK Context Enabled</p>
   </footer>
 
-  <!-- Core Logic Script -->
   <script>
+    let lang = 'zh'; // 'zh' or 'en'
     let currentTab = 'weight';
     let hkmaRates = { 'HKD': 1, 'USD': 7.8, 'GBP': 9.8, 'EUR': 8.5 };
-    let liveTempC = null;
 
-    // Unit Definitions & Formulas
-    const units = {
-      weight: {
-        'lbs': { name: '磅 (lbs)', toBase: x => x * 0.45359237, fromBase: x => x / 0.45359237 },
-        'kg': { name: '公斤 (kg)', toBase: x => x, fromBase: x => x },
-        'g': { name: '克 (g)', toBase: x => x / 1000, fromBase: x => x * 1000 },
-        'catty_hk': { name: '香港斤 (司馬斤)', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 }
+    const i18n = {
+      zh: {
+        subtitle: '零廣告 · 離線可用 · 香港在地化',
+        smartLabel: '🔍 智能速換 (例如: <span class="text-cyan-400 cursor-pointer" onclick="fillSmart(\'150 lbs to kg\')">150 lbs to kg</span>)',
+        inputLabel: '輸入數值',
+        fromLabel: '由 (From)',
+        toLabel: '轉至 (To)',
+        resultLabel: '轉換結果',
+        copyBtn: '📋 複製結果',
+        copied: '✅ 已複製！',
+        tabs: { weight: '重量', area: '面積/長度', temp: '溫度', fx: 'HKMA 匯率' }
       },
-      area: {
-        'sqft': { name: '平方呎 (sq ft)', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
-        'sqm': { name: '平方米 (sq m)', toBase: x => x, fromBase: x => x },
-        'ping': { name: '台灣坪', toBase: x => x * 3.305785, fromBase: x => x / 3.305785 }
-      },
-      temp: {
-        'C': { name: '攝氏 (°C)', toBase: x => x, fromBase: x => x },
-        'F': { name: '華氏 (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 }
-      },
-      fx: {
-        'HKD': { name: '港元 (HKD)' },
-        'USD': { name: '美元 (USD)' },
-        'GBP': { name: '英鎊 (GBP)' },
-        'EUR': { name: '歐元 (EUR)' }
+      en: {
+        subtitle: 'Ad-free · Offline Ready · HK Localized',
+        smartLabel: '🔍 Smart Input (e.g. <span class="text-cyan-400 cursor-pointer" onclick="fillSmart(\'150 lbs to kg\')">150 lbs to kg</span>)',
+        inputLabel: 'Value',
+        fromLabel: 'From',
+        toLabel: 'To',
+        resultLabel: 'Result',
+        copyBtn: '📋 Copy Result',
+        copied: '✅ Copied!',
+        tabs: { weight: 'Weight', area: 'Area/Length', temp: 'Temperature', fx: 'HKMA FX' }
       }
     };
+
+    const units = {
+      weight: {
+        'lbs': { zh: '磅 (lbs)', en: 'Pounds (lbs)', toBase: x => x * 0.45359237, fromBase: x => x / 0.45359237 },
+        'kg': { zh: '公斤 (kg)', en: 'Kilograms (kg)', toBase: x => x, fromBase: x => x },
+        'g': { zh: '克 (g)', en: 'Grams (g)', toBase: x => x / 1000, fromBase: x => x * 1000 },
+        'catty_hk': { zh: '香港斤 (司馬斤)', en: 'HK Catty', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 }
+      },
+      area: {
+        'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet (sq ft)', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
+        'sqm': { zh: '平方米 (sq m)', en: 'Sq Meters (sq m)', toBase: x => x, fromBase: x => x },
+        'ping': { zh: '台灣坪', en: 'Taiwan Ping', toBase: x => x * 3.305785, fromBase: x => x / 3.305785 }
+      },
+      temp: {
+        'C': { zh: '攝氏 (°C)', en: 'Celsius (°C)', toBase: x => x, fromBase: x => x },
+        'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 }
+      },
+      fx: {
+        'HKD': { zh: '港元 (HKD)', en: 'HKD' },
+        'USD': { zh: '美元 (USD)', en: 'USD' },
+        'GBP': { zh: '英鎊 (GBP)', en: 'GBP' },
+        'EUR': { zh: '歐元 (EUR)', en: 'EUR' }
+      }
+    };
+
+    function toggleLanguage() {
+      lang = lang === 'zh' ? 'en' : 'zh';
+      document.getElementById('langBtnText').innerText = lang === 'zh' ? 'EN' : '中文';
+      updateUIStrings();
+      populateSelects();
+      convert();
+    }
+
+    function updateUIStrings() {
+      const t = i18n[lang];
+      document.getElementById('t-subtitle').innerText = t.subtitle;
+      document.getElementById('t-smartLabel').innerHTML = t.smartLabel;
+      document.getElementById('t-inputLabel').innerText = t.inputLabel;
+      document.getElementById('t-fromLabel').innerText = t.fromLabel;
+      document.getElementById('t-toLabel').innerText = t.toLabel;
+      document.getElementById('t-resultLabel').innerText = t.resultLabel;
+      document.getElementById('copyBtnText').innerText = t.copyBtn;
+
+      // Update Tab titles
+      Object.keys(t.tabs).forEach(key => {
+        document.getElementById(`tab-${key}`).innerText = t.tabs[key];
+      });
+    }
 
     function switchTab(tab) {
       currentTab = tab;
@@ -139,8 +177,9 @@
 
       const currentUnits = units[currentTab];
       Object.keys(currentUnits).forEach(key => {
-        fromSelect.add(new Option(currentUnits[key].name, key));
-        toSelect.add(new Option(currentUnits[key].name, key));
+        const label = currentUnits[key][lang];
+        fromSelect.add(new Option(label, key));
+        toSelect.add(new Option(label, key));
       });
 
       if (Object.keys(currentUnits).length > 1) {
@@ -152,125 +191,39 @@
       const val = parseFloat(document.getElementById('inputValue').value);
       const from = document.getElementById('fromUnit').value;
       const to = document.getElementById('toUnit').value;
-      const extraInfo = document.getElementById('extraInfo');
       const resultEl = document.getElementById('result');
 
       if (isNaN(val) || !from || !to) {
         resultEl.innerText = '---';
-        extraInfo.innerText = '';
         return;
       }
 
       let res = 0;
-
       if (currentTab === 'fx') {
-        // HKMA Currency Math
         const inHKD = val * (hkmaRates[from] || 1);
         res = inHKD / (hkmaRates[to] || 1);
-        extraInfo.innerText = '💡 數據源自香港金管局 (HKMA) 官方 Daily API';
       } else {
-        // Physical Unit Conversion
         const baseVal = units[currentTab][from].toBase(val);
         res = units[currentTab][to].fromBase(baseVal);
-
-        // Context Hints (Hong Kong Specific)
-        if (currentTab === 'area' && from === 'sqft' && to === 'sqm') {
-          extraInfo.innerText = `💡 約等於 ${(val / 410).toFixed(2)} 個標準羽毛球場面積`;
-        } else if (currentTab === 'temp' && liveTempC !== null) {
-          extraInfo.innerText = `🌡️ 今日香港現時氣溫：${liveTempC}°C (${((liveTempC * 9/5) + 32).toFixed(1)}°F)`;
-        } else {
-          extraInfo.innerText = '';
-        }
       }
 
       resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 4 });
     }
 
-    // Smart Input Parser (e.g. "150 lbs to kg")
-    function handleSmartInput() {
-      const query = document.getElementById('smartInput').value.toLowerCase().trim();
-      if (!query) return;
-
-      const match = query.match(/^([\d\.]+)\s*([a-zA-Z呎米磅]+)\s*(?:to|轉|->)\s*([a-zA-Z呎米磅]+)$/);
-      if (match) {
-        const val = match[1];
-        let from = match[2];
-        let to = match[3];
-
-        // Alias mapping
-        const aliases = { '呎': 'sqft', '米': 'sqm', '磅': 'lbs', '公斤': 'kg', 'c': 'C', 'f': 'F' };
-        from = aliases[from] || from;
-        to = aliases[to] || to;
-
-        // Auto switch tab if found
-        for (const [tab, unitGroup] of Object.entries(units)) {
-          if (unitGroup[from] && unitGroup[to]) {
-            document.getElementById('inputValue').value = val;
-            switchTab(tab);
-            document.getElementById('fromUnit').value = from;
-            document.getElementById('toUnit').value = to;
-            convert();
-            break;
-          }
-        }
-      }
-    }
-
-    function fillSmart(text) {
-      document.getElementById('smartInput').value = text;
-      handleSmartInput();
-    }
-
-    // Copy Result to Clipboard
     function copyResult() {
       const resText = document.getElementById('result').innerText;
       if (resText === '---') return;
-
       navigator.clipboard.writeText(resText).then(() => {
         const btnText = document.getElementById('copyBtnText');
-        btnText.innerText = '✅ 已複製！';
-        setTimeout(() => { btnText.innerText = '📋 複製結果'; }, 2000);
+        btnText.innerText = i18n[lang].copied;
+        setTimeout(() => { btnText.innerText = i18n[lang].copyBtn; }, 2000);
       });
     }
 
-    // Fetch HKMA Rates API
-    async function fetchHKMA() {
-      try {
-        const res = await fetch('https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/er-eor');
-        const data = await res.json();
-        if (data.result && data.result.records && data.result.records.length > 0) {
-          const latest = data.result.records[0];
-          hkmaRates = {
-            'HKD': 1,
-            'USD': parseFloat(latest.usd) || 7.8,
-            'GBP': parseFloat(latest.gbp) || 9.8,
-            'EUR': parseFloat(latest.eur) || 8.5
-          };
-        }
-      } catch (e) {
-        console.warn('HKMA API 載入失敗，使用預設值');
-      }
-    }
-
-    // Fetch HK Observatory Weather API
-    async function fetchHKWeather() {
-      try {
-        const res = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc');
-        const data = await res.json();
-        if (data.temperature && data.temperature.data.length > 0) {
-          liveTempC = data.temperature.data[0].value;
-          if (currentTab === 'temp') convert();
-        }
-      } catch (e) {
-        console.warn('天文台 Weather API 載入失敗');
-      }
-    }
-
-    // Initialize App
+    // Init
+    updateUIStrings();
     populateSelects();
     convert();
-    fetchHKMA();
-    fetchHKWeather();
   </script>
 </body>
 </html>
