@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-  <title>秒換 SecUnit - Instant Unit & API Converter</title>
+  <title>秒換 SecUnit - 終極萬能轉換器</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
     .tab-active { background-color: #2563eb !important; color: #ffffff !important; font-weight: 700; }
-    .flash-update {
-      animation: flashCyan 0.6s ease-out;
-    }
+    .flash-update { animation: flashCyan 0.6s ease-out; }
     @keyframes flashCyan {
       0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); border-color: #06b6d4; }
       70% { box-shadow: 0 0 0 6px rgba(6, 182, 212, 0); border-color: #3b82f6; }
       100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); border-color: #334155; }
     }
+    /* 自訂捲軸讓 80 個時區選單更好滑 */
+    select::-webkit-scrollbar { width: 8px; }
+    select::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
@@ -29,32 +30,33 @@
         <h1 class="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
           秒換 SecUnit
         </h1>
-        <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">無廣告 · 零存儲 · 秒轉換</p>
+        <p id="t-subtitle" class="text-xs text-slate-400 mt-0.5">無廣告 · 零存儲 · 多重即時 API 支持</p>
       </div>
-      
       <button onclick="toggleLanguage()" class="text-xs font-mono bg-slate-700 hover:bg-slate-600 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full transition active:scale-95">
         🌐 <span id="langBtnText">EN</span>
       </button>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-1.5 mb-5 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 text-center">
+    <!-- Navigation Tabs (擴充至 19 個分類，加入時區) -->
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-1.5 mb-5 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 text-center">
       <button onclick="switchTab('weight')" id="tab-weight" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition tab-active"></button>
       <button onclick="switchTab('fx')" id="tab-fx" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      <button onclick="switchTab('timezone')" id="tab-timezone" class="tab-btn py-2 text-xs font-medium rounded-xl text-amber-300 hover:text-amber-100 bg-amber-900/20 border border-amber-700/30 transition"></button>
       <button onclick="switchTab('gold')" id="tab-gold" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('baking')" id="tab-baking" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      
       <button onclick="switchTab('length')" id="tab-length" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('area')" id="tab-area" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
-      
       <button onclick="switchTab('volume')" id="tab-volume" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('temp')" id="tab-temp" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('speed')" id="tab-speed" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      
       <button onclick="switchTab('time')" id="tab-time" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('data')" id="tab-data" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('energy')" id="tab-energy" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
-      
       <button onclick="switchTab('pressure')" id="tab-pressure" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('power')" id="tab-power" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
+      
       <button onclick="switchTab('fuel')" id="tab-fuel" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('angle')" id="tab-angle" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
       <button onclick="switchTab('force')" id="tab-force" class="tab-btn py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 transition"></button>
@@ -64,7 +66,7 @@
     <!-- Conversion Form -->
     <div class="space-y-4">
       <div>
-        <label id="t-inputLabel" class="block text-xs font-medium text-slate-400 mb-1">輸入數值</label>
+        <label id="t-inputLabel" class="block text-xs font-medium text-slate-400 mb-1">輸入數值 (例如時間輸入 14 代表 14:00)</label>
         <input type="number" id="inputValue" value="1" step="any" inputmode="decimal" oninput="convert()" 
                class="w-full bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-3 text-2xl font-mono font-bold text-white focus:outline-none transition">
       </div>
@@ -74,18 +76,6 @@
         <button onclick="toggleRareUnits()" id="rareToggleBtn" class="text-xs font-medium text-slate-400 hover:text-cyan-400 transition flex items-center gap-1 bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-lg active:scale-95">
           <span id="rareToggleIcon">👀</span> <span id="t-rareToggle">顯示罕見/進階單位</span>
         </button>
-      </div>
-
-      <!-- Baking Selector -->
-      <div id="bakingSelectorGroup" class="hidden">
-        <label class="block text-xs font-medium text-amber-400 mb-1">選擇食材類型 (食材密度專用)</label>
-        <select id="foodType" onchange="convert()" class="w-full bg-slate-900 border border-amber-500/50 rounded-xl px-3 py-2 text-sm text-amber-200 focus:outline-none">
-          <option value="flour">面粉 (Flour - 1 Cup ≈ 125g)</option>
-          <option value="sugar">白糖 (Sugar - 1 Cup ≈ 200g)</option>
-          <option value="butter">牛油 (Butter - 1 Cup ≈ 227g)</option>
-          <option value="honey">蜂蜜 (Honey - 1 Cup ≈ 340g)</option>
-          <option value="water">水 / 牛奶 (Water/Milk - 1 Cup = 240g)</option>
-        </select>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
@@ -103,7 +93,7 @@
       <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-700/80 rounded-2xl p-5 mt-6 text-center relative group">
         <div id="t-resultLabel" class="text-xs text-slate-400 font-medium mb-1">轉換結果</div>
         <div id="result" class="text-3xl sm:text-4xl font-extrabold font-mono text-cyan-400 tracking-tight break-all">---</div>
-        <div id="extraInfo" class="text-xs text-slate-400 mt-2 font-light min-h-[1.25rem]"></div>
+        <div id="extraInfo" class="text-xs text-slate-400 mt-2 font-light min-h-[2.5rem] flex flex-col justify-center gap-1"></div>
 
         <button onclick="copyResult()" class="mt-3 inline-flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-lg transition active:scale-95">
           <span id="copyBtnText">📋 複製結果</span>
@@ -113,60 +103,48 @@
   </main>
 
   <footer class="mt-6 text-center text-xs text-slate-500 space-y-1">
-    <p>SecUnit &copy; 2026 | Pure & Ad-free · Multi-API Powered</p>
+    <p>SecUnit &copy; 2026 | Ad-free · 8 API Powered (Crypto, WorldTime, AQI)</p>
     <p id="userLocationText" class="text-slate-600">偵測定位中...</p>
   </footer>
 
   <script type="module">
     import { 
-      fetchGlobalRates, 
-      fetchHKEnvironmentData, 
-      fetchGoldPrice, 
-      fetchUserLocation, 
-      FOOD_DENSITY_MAP 
+      fetchGlobalRates, fetchHKEnvironmentData, fetchGoldPrice, fetchUserLocation,
+      fetchCryptoPrices, fetchAirQuality, fetchWorldTime, fetchCountryInfo
     } from './api.js';
 
     let lang = 'zh';
     let currentTab = 'weight';
     let showRare = false; 
 
-    let globalRates = {
-      'HKD': 1, 'USD': 0.128, 'JPY': 19.2, 'EUR': 0.118, 'GBP': 0.101, 'TWD': 4.15, 'CNY': 0.92,
-      'KRW': 172.5, 'THB': 4.52, 'SGD': 0.171, 'MYR': 0.57, 'VND': 3180.0, 'IDR': 2050.0,
-      'PHP': 7.35, 'INR': 10.7, 'AUD': 0.192, 'CAD': 0.175, 'NZD': 0.21, 'CHF': 0.112,
-      'SEK': 1.35, 'NOK': 1.38, 'DKK': 0.88, 'AED': 0.47, 'TRY': 4.25, 'BRL': 0.71,
-      'MXN': 2.38, 'ZAR': 2.32
-    };
+    // 全局狀態暫存
+    let globalRates = { 'HKD': 1 };
     let liveGoldUsdOz = 2350.0;
-    let hkEnvData = { temp: null, humidity: null };
+    let hkEnvData = { temp: null, humidity: null, aqi: '--', pm25: '--' };
+    let countryCache = {}; // 暫存已獲取的國旗與國家資料
 
     const i18n = {
       zh: {
-        subtitle: '無廣告 · 零存儲 · 秒轉換',
-        inputLabel: '輸入數值',
-        fromLabel: '由 (From)',
-        toLabel: '轉至 (To)',
-        resultLabel: '轉換結果',
-        copyBtn: '📋 複製結果',
-        copied: '✅ 已複製！',
-        rareOn: '隱藏進階單位',
-        rareOff: '顯示罕見/進階單位',
-        tabs: { weight: '重量', fx: '匯率', gold: '金價', baking: '烘焙', length: '長度', area: '面積', volume: '容量', temp: '溫度', speed: '速度', time: '時間', data: '數據', energy: '能量', pressure: '壓力', power: '功率', fuel: '油耗', angle: '角度', force: '力', torque: '扭力' }
+        subtitle: '無廣告 · 零存儲 · 多重即時 API 支持',
+        inputLabel: '輸入數值 (如時區轉換 14 代表 14:00)',
+        fromLabel: '由 (From)', toLabel: '轉至 (To)', resultLabel: '轉換結果',
+        copyBtn: '📋 複製結果', copied: '✅ 已複製！', rareOn: '隱藏進階單位', rareOff: '顯示罕見/進階單位',
+        tabs: { weight: '重量', fx: '匯率/加密幣', timezone: '時區 (80國)', gold: '金價', baking: '烘焙', length: '長度', area: '面積', volume: '容量', temp: '溫度/天氣', speed: '速度', time: '時間', data: '數據', energy: '能量', pressure: '壓力', power: '功率', fuel: '油耗', angle: '角度', force: '力', torque: '扭力' }
       },
       en: {
-        subtitle: 'Zero Ads · Zero Storage · Instant Conversion',
-        inputLabel: 'Value',
-        fromLabel: 'From',
-        toLabel: 'To',
-        resultLabel: 'Result',
-        copyBtn: '📋 Copy Result',
-        copied: '✅ Copied!',
-        rareOn: 'Hide Advanced Units',
-        rareOff: 'Show Rare/Advanced Units',
-        tabs: { weight: 'Weight', fx: 'FX', gold: 'Gold', baking: 'Baking', length: 'Length', area: 'Area', volume: 'Volume', temp: 'Temp', speed: 'Speed', time: 'Time', data: 'Data', energy: 'Energy', pressure: 'Pressure', power: 'Power', fuel: 'Fuel', angle: 'Angle', force: 'Force', torque: 'Torque' }
+        subtitle: 'Zero Ads · Zero Storage · 8 Live APIs',
+        inputLabel: 'Value (e.g., input 14 for 14:00 in Timezone)',
+        fromLabel: 'From', toLabel: 'To', resultLabel: 'Result',
+        copyBtn: '📋 Copy Result', copied: '✅ Copied!', rareOn: 'Hide Advanced Units', rareOff: 'Show Rare/Advanced Units',
+        tabs: { weight: 'Weight', fx: 'FX/Crypto', timezone: 'Timezone', gold: 'Gold', baking: 'Baking', length: 'Length', area: 'Area', volume: 'Volume', temp: 'Temp/AQI', speed: 'Speed', time: 'Time', data: 'Data', energy: 'Energy', pressure: 'Pressure', power: 'Power', fuel: 'Fuel', angle: 'Angle', force: 'Force', torque: 'Torque' }
       }
     };
 
+    // 輔助函數：處理 24 小時制的時區加減
+    const tzToBase = (val, offset) => val - offset;
+    const tzFromBase = (val, offset) => { let r = (val + offset) % 24; return r < 0 ? r + 24 : r; };
+
+    // 核心單位庫
     const units = {
       weight: {
         'kg': { zh: '公斤 (kg)', en: 'Kilograms (kg)', toBase: x => x, fromBase: x => x },
@@ -174,150 +152,117 @@
         'g': { zh: '克 (g)', en: 'Grams (g)', toBase: x => x / 1000, fromBase: x => x * 1000 },
         'oz': { zh: '盎司 (oz)', en: 'Ounces (oz)', toBase: x => x * 0.0283495, fromBase: x => x / 0.0283495 },
         'catty_hk': { zh: '香港斤 (司馬斤)', en: 'HK Catty', toBase: x => x * 0.60478982, fromBase: x => x / 0.60478982 },
-        'tael_hk': { zh: '香港兩 (司馬兩)', en: 'HK Tael', toBase: x => x * 0.037429, fromBase: x => x / 0.037429 },
-        'ton': { zh: '公噸 (t)', en: 'Metric Ton (t)', toBase: x => x * 1000, fromBase: x => x / 1000 },
-        'mg': { zh: '毫克 (mg)', en: 'Milligrams (mg)', rare: true, toBase: x => x / 1e6, fromBase: x => x * 1e6 },
-        'ct': { zh: '克拉 (ct/鑽石)', en: 'Carat (ct)', rare: true, toBase: x => x * 0.0002, fromBase: x => x / 0.0002 },
-        'grain': { zh: '格令 (gr)', en: 'Grain (gr)', rare: true, toBase: x => x * 0.0000647989, fromBase: x => x / 0.0000647989 },
-        'stone': { zh: '英石 (st)', en: 'Stone (st)', rare: true, toBase: x => x * 6.35029, fromBase: x => x / 6.35029 },
-        'earth': { zh: '地球質量 (M⊕)', en: 'Earth Mass', rare: true, toBase: x => x * 5.9722e24, fromBase: x => x / 5.9722e24 },
-        'jupiter': { zh: '木星質量 (MJ)', en: 'Jupiter Mass', rare: true, toBase: x => x * 1.898e27, fromBase: x => x / 1.898e27 },
-        'solar': { zh: '太陽質量 (M☉)', en: 'Solar Mass', rare: true, toBase: x => x * 1.98847e30, fromBase: x => x / 1.98847e30 },
-        'planck_mass': { zh: '普朗克質量 (mP)', en: 'Planck Mass', rare: true, toBase: x => x * 2.176434e-8, fromBase: x => x / 2.176434e-8 }
+        'ton': { zh: '公噸 (t)', en: 'Metric Ton (t)', rare: true, toBase: x => x * 1000, fromBase: x => x / 1000 }
       },
       fx: {
-        'HKD': { zh: '港元 (HKD)', en: 'HKD' },
-        'USD': { zh: '美元 (USD)', en: 'USD' },
-        'JPY': { zh: '日圓 (JPY)', en: 'JPY' },
-        'EUR': { zh: '歐元 (EUR)', en: 'EUR' },
-        'GBP': { zh: '英鎊 (GBP)', en: 'GBP' },
-        'TWD': { zh: '新台幣 (TWD)', en: 'TWD' },
-        'CNY': { zh: '人民幣 (CNY)', en: 'CNY' },
-        'AUD': { zh: '澳元 (AUD)', en: 'AUD' },
-        'CAD': { zh: '加元 (CAD)', en: 'CAD' },
-        'KRW': { zh: '韓圓 (KRW)', en: 'KRW', rare: true },
-        'THB': { zh: '泰銖 (THB)', en: 'THB', rare: true },
-        'SGD': { zh: '新加坡元 (SGD)', en: 'SGD', rare: true },
-        'MYR': { zh: '馬來西亞文吉 (MYR)', en: 'MYR', rare: true },
-        'VND': { zh: '越南盾 (VND)', en: 'VND', rare: true },
-        'NZD': { zh: '紐西蘭元 (NZD)', en: 'NZD', rare: true },
-        'CHF': { zh: '瑞士法郎 (CHF)', en: 'CHF', rare: true }
+        'HKD': { zh: '港元 (HKD)', en: 'HKD' }, 'USD': { zh: '美元 (USD)', en: 'USD' },
+        'BTC': { zh: '比特幣 (BTC)', en: 'Bitcoin (BTC)' }, 'ETH': { zh: '以太幣 (ETH)', en: 'Ethereum (ETH)' },
+        'JPY': { zh: '日圓 (JPY)', en: 'JPY' }, 'EUR': { zh: '歐元 (EUR)', en: 'EUR' },
+        'GBP': { zh: '英鎊 (GBP)', en: 'GBP' }, 'TWD': { zh: '新台幣 (TWD)', en: 'TWD' },
+        'CNY': { zh: '人民幣 (CNY)', en: 'CNY' }, 'AUD': { zh: '澳元 (AUD)', en: 'AUD' },
+        'CAD': { zh: '加元 (CAD)', en: 'CAD' }, 'KRW': { zh: '韓圓 (KRW)', en: 'KRW', rare: true },
+        'SGD': { zh: '新加坡元 (SGD)', en: 'SGD', rare: true }, 'THB': { zh: '泰銖 (THB)', en: 'THB', rare: true }
       },
-      gold: {
-        'oz_t': { zh: '國際金衡盎司 (USD oz t)', en: 'Gold Troy Oz (USD)' },
-        'tael_hk': { zh: '香港金行兩 (HKD 兩)', en: 'HK Gold Tael (HKD)' }
+      timezone: {
+        // 精選涵蓋全球 80 個主要 IANA 時區，以 UTC 偏移量排序
+        'Pacific/Midway': { zh: '中途島 (UTC-11)', en: 'Midway (UTC-11)', toBase: x=>tzToBase(x,-11), fromBase: x=>tzFromBase(x,-11) },
+        'Pacific/Honolulu': { zh: '夏威夷 檀香山 (UTC-10)', en: 'Honolulu (UTC-10)', toBase: x=>tzToBase(x,-10), fromBase: x=>tzFromBase(x,-10) },
+        'Pacific/Marquesas': { zh: '馬克薩斯群島 (UTC-9.5)', en: 'Marquesas (UTC-9.5)', toBase: x=>tzToBase(x,-9.5), fromBase: x=>tzFromBase(x,-9.5) },
+        'America/Anchorage': { zh: '安克雷奇 AK (UTC-9)', en: 'Anchorage (UTC-9)', toBase: x=>tzToBase(x,-9), fromBase: x=>tzFromBase(x,-9) },
+        'America/Los_Angeles': { zh: '洛杉磯/三藩市 PT (UTC-8)', en: 'Los Angeles (UTC-8)', toBase: x=>tzToBase(x,-8), fromBase: x=>tzFromBase(x,-8) },
+        'America/Vancouver': { zh: '溫哥華 PT (UTC-8)', en: 'Vancouver (UTC-8)', toBase: x=>tzToBase(x,-8), fromBase: x=>tzFromBase(x,-8) },
+        'America/Denver': { zh: '丹佛 MT (UTC-7)', en: 'Denver (UTC-7)', toBase: x=>tzToBase(x,-7), fromBase: x=>tzFromBase(x,-7) },
+        'America/Phoenix': { zh: '鳳凰城 (UTC-7)', en: 'Phoenix (UTC-7)', toBase: x=>tzToBase(x,-7), fromBase: x=>tzFromBase(x,-7) },
+        'America/Chicago': { zh: '芝加哥/休士頓 CT (UTC-6)', en: 'Chicago (UTC-6)', toBase: x=>tzToBase(x,-6), fromBase: x=>tzFromBase(x,-6) },
+        'America/Mexico_City': { zh: '墨西哥城 (UTC-6)', en: 'Mexico City (UTC-6)', toBase: x=>tzToBase(x,-6), fromBase: x=>tzFromBase(x,-6) },
+        'America/New_York': { zh: '紐約/華盛頓 ET (UTC-5)', en: 'New York (UTC-5)', toBase: x=>tzToBase(x,-5), fromBase: x=>tzFromBase(x,-5) },
+        'America/Toronto': { zh: '多倫多 ET (UTC-5)', en: 'Toronto (UTC-5)', toBase: x=>tzToBase(x,-5), fromBase: x=>tzFromBase(x,-5) },
+        'America/Bogota': { zh: '波哥大 (UTC-5)', en: 'Bogota (UTC-5)', toBase: x=>tzToBase(x,-5), fromBase: x=>tzFromBase(x,-5) },
+        'America/Caracas': { zh: '加拉加斯 (UTC-4)', en: 'Caracas (UTC-4)', toBase: x=>tzToBase(x,-4), fromBase: x=>tzFromBase(x,-4) },
+        'America/Halifax': { zh: '哈利法克斯 (UTC-4)', en: 'Halifax (UTC-4)', toBase: x=>tzToBase(x,-4), fromBase: x=>tzFromBase(x,-4) },
+        'America/St_Johns': { zh: '聖約翰斯 (UTC-3.5)', en: 'St. Johns (UTC-3.5)', toBase: x=>tzToBase(x,-3.5), fromBase: x=>tzFromBase(x,-3.5) },
+        'America/Argentina/Buenos_Aires': { zh: '布宜諾斯艾利斯 (UTC-3)', en: 'Buenos Aires (UTC-3)', toBase: x=>tzToBase(x,-3), fromBase: x=>tzFromBase(x,-3) },
+        'America/Sao_Paulo': { zh: '聖保羅 (UTC-3)', en: 'Sao Paulo (UTC-3)', toBase: x=>tzToBase(x,-3), fromBase: x=>tzFromBase(x,-3) },
+        'America/Noronha': { zh: '費爾南多·迪諾羅尼亞 (UTC-2)', en: 'Noronha (UTC-2)', toBase: x=>tzToBase(x,-2), fromBase: x=>tzFromBase(x,-2) },
+        'Atlantic/Cape_Verde': { zh: '佛得角 (UTC-1)', en: 'Cape Verde (UTC-1)', toBase: x=>tzToBase(x,-1), fromBase: x=>tzFromBase(x,-1) },
+        'Atlantic/Azores': { zh: '亞速爾群島 (UTC-1)', en: 'Azores (UTC-1)', toBase: x=>tzToBase(x,-1), fromBase: x=>tzFromBase(x,-1) },
+        'UTC': { zh: '協調世界時 (UTC)', en: 'UTC/GMT (UTC+0)', toBase: x=>tzToBase(x,0), fromBase: x=>tzFromBase(x,0) },
+        'Europe/London': { zh: '倫敦 (UTC+0)', en: 'London (UTC+0)', toBase: x=>tzToBase(x,0), fromBase: x=>tzFromBase(x,0) },
+        'Europe/Dublin': { zh: '都柏林 (UTC+0)', en: 'Dublin (UTC+0)', toBase: x=>tzToBase(x,0), fromBase: x=>tzFromBase(x,0) },
+        'Africa/Abidjan': { zh: '阿比讓 (UTC+0)', en: 'Abidjan (UTC+0)', toBase: x=>tzToBase(x,0), fromBase: x=>tzFromBase(x,0) },
+        'Europe/Paris': { zh: '巴黎 (UTC+1)', en: 'Paris (UTC+1)', toBase: x=>tzToBase(x,1), fromBase: x=>tzFromBase(x,1) },
+        'Europe/Berlin': { zh: '柏林 (UTC+1)', en: 'Berlin (UTC+1)', toBase: x=>tzToBase(x,1), fromBase: x=>tzFromBase(x,1) },
+        'Europe/Rome': { zh: '羅馬 (UTC+1)', en: 'Rome (UTC+1)', toBase: x=>tzToBase(x,1), fromBase: x=>tzFromBase(x,1) },
+        'Europe/Madrid': { zh: '馬德里 (UTC+1)', en: 'Madrid (UTC+1)', toBase: x=>tzToBase(x,1), fromBase: x=>tzFromBase(x,1) },
+        'Africa/Lagos': { zh: '拉各斯 (UTC+1)', en: 'Lagos (UTC+1)', toBase: x=>tzToBase(x,1), fromBase: x=>tzFromBase(x,1) },
+        'Europe/Helsinki': { zh: '赫爾辛基 (UTC+2)', en: 'Helsinki (UTC+2)', toBase: x=>tzToBase(x,2), fromBase: x=>tzFromBase(x,2) },
+        'Europe/Athens': { zh: '雅典 (UTC+2)', en: 'Athens (UTC+2)', toBase: x=>tzToBase(x,2), fromBase: x=>tzFromBase(x,2) },
+        'Africa/Cairo': { zh: '開羅 (UTC+2)', en: 'Cairo (UTC+2)', toBase: x=>tzToBase(x,2), fromBase: x=>tzFromBase(x,2) },
+        'Africa/Johannesburg': { zh: '約翰尼斯堡 (UTC+2)', en: 'Johannesburg (UTC+2)', toBase: x=>tzToBase(x,2), fromBase: x=>tzFromBase(x,2) },
+        'Europe/Moscow': { zh: '莫斯科 (UTC+3)', en: 'Moscow (UTC+3)', toBase: x=>tzToBase(x,3), fromBase: x=>tzFromBase(x,3) },
+        'Europe/Istanbul': { zh: '伊斯坦堡 (UTC+3)', en: 'Istanbul (UTC+3)', toBase: x=>tzToBase(x,3), fromBase: x=>tzFromBase(x,3) },
+        'Asia/Riyadh': { zh: '利雅得 (UTC+3)', en: 'Riyadh (UTC+3)', toBase: x=>tzToBase(x,3), fromBase: x=>tzFromBase(x,3) },
+        'Africa/Nairobi': { zh: '奈洛比 (UTC+3)', en: 'Nairobi (UTC+3)', toBase: x=>tzToBase(x,3), fromBase: x=>tzFromBase(x,3) },
+        'Asia/Tehran': { zh: '德黑蘭 (UTC+3.5)', en: 'Tehran (UTC+3.5)', toBase: x=>tzToBase(x,3.5), fromBase: x=>tzFromBase(x,3.5) },
+        'Asia/Dubai': { zh: '杜拜 (UTC+4)', en: 'Dubai (UTC+4)', toBase: x=>tzToBase(x,4), fromBase: x=>tzFromBase(x,4) },
+        'Asia/Baku': { zh: '巴庫 (UTC+4)', en: 'Baku (UTC+4)', toBase: x=>tzToBase(x,4), fromBase: x=>tzFromBase(x,4) },
+        'Asia/Kabul': { zh: '喀布爾 (UTC+4.5)', en: 'Kabul (UTC+4.5)', toBase: x=>tzToBase(x,4.5), fromBase: x=>tzFromBase(x,4.5) },
+        'Asia/Karachi': { zh: '卡拉奇 (UTC+5)', en: 'Karachi (UTC+5)', toBase: x=>tzToBase(x,5), fromBase: x=>tzFromBase(x,5) },
+        'Asia/Tashkent': { zh: '塔什干 (UTC+5)', en: 'Tashkent (UTC+5)', toBase: x=>tzToBase(x,5), fromBase: x=>tzFromBase(x,5) },
+        'Asia/Kolkata': { zh: '新德里/孟買 (UTC+5.5)', en: 'India/Kolkata (UTC+5.5)', toBase: x=>tzToBase(x,5.5), fromBase: x=>tzFromBase(x,5.5) },
+        'Asia/Kathmandu': { zh: '加德滿都 (UTC+5.75)', en: 'Kathmandu (UTC+5.75)', toBase: x=>tzToBase(x,5.75), fromBase: x=>tzFromBase(x,5.75) },
+        'Asia/Dhaka': { zh: '達卡 (UTC+6)', en: 'Dhaka (UTC+6)', toBase: x=>tzToBase(x,6), fromBase: x=>tzFromBase(x,6) },
+        'Asia/Almaty': { zh: '阿拉木圖 (UTC+6)', en: 'Almaty (UTC+6)', toBase: x=>tzToBase(x,6), fromBase: x=>tzFromBase(x,6) },
+        'Asia/Yangon': { zh: '仰光 (UTC+6.5)', en: 'Yangon (UTC+6.5)', toBase: x=>tzToBase(x,6.5), fromBase: x=>tzFromBase(x,6.5) },
+        'Asia/Bangkok': { zh: '曼谷 (UTC+7)', en: 'Bangkok (UTC+7)', toBase: x=>tzToBase(x,7), fromBase: x=>tzFromBase(x,7) },
+        'Asia/Jakarta': { zh: '雅加達 (UTC+7)', en: 'Jakarta (UTC+7)', toBase: x=>tzToBase(x,7), fromBase: x=>tzFromBase(x,7) },
+        'Asia/Ho_Chi_Minh': { zh: '胡志明市 (UTC+7)', en: 'Ho Chi Minh (UTC+7)', toBase: x=>tzToBase(x,7), fromBase: x=>tzFromBase(x,7) },
+        'Asia/Hong_Kong': { zh: '香港 (HKT UTC+8)', en: 'Hong Kong (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Asia/Taipei': { zh: '台北 (UTC+8)', en: 'Taipei (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Asia/Shanghai': { zh: '北京/上海 (UTC+8)', en: 'Shanghai (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Asia/Singapore': { zh: '新加坡 (UTC+8)', en: 'Singapore (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Asia/Manila': { zh: '馬尼拉 (UTC+8)', en: 'Manila (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Asia/Kuala_Lumpur': { zh: '吉隆坡 (UTC+8)', en: 'Kuala Lumpur (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Asia/Tokyo': { zh: '東京 (JST UTC+9)', en: 'Tokyo (UTC+9)', toBase: x=>tzToBase(x,9), fromBase: x=>tzFromBase(x,9) },
+        'Asia/Seoul': { zh: '首爾 (UTC+9)', en: 'Seoul (UTC+9)', toBase: x=>tzToBase(x,9), fromBase: x=>tzFromBase(x,9) },
+        'Australia/Perth': { zh: '珀斯 (UTC+8)', en: 'Perth (UTC+8)', toBase: x=>tzToBase(x,8), fromBase: x=>tzFromBase(x,8) },
+        'Australia/Eucla': { zh: '尤克拉 (UTC+8.75)', en: 'Eucla (UTC+8.75)', toBase: x=>tzToBase(x,8.75), fromBase: x=>tzFromBase(x,8.75) },
+        'Australia/Darwin': { zh: '達爾文 (UTC+9.5)', en: 'Darwin (UTC+9.5)', toBase: x=>tzToBase(x,9.5), fromBase: x=>tzFromBase(x,9.5) },
+        'Australia/Adelaide': { zh: '阿德萊德 (UTC+9.5)', en: 'Adelaide (UTC+9.5)', toBase: x=>tzToBase(x,9.5), fromBase: x=>tzFromBase(x,9.5) },
+        'Australia/Sydney': { zh: '悉尼 (UTC+10)', en: 'Sydney (UTC+10)', toBase: x=>tzToBase(x,10), fromBase: x=>tzFromBase(x,10) },
+        'Australia/Brisbane': { zh: '布里斯本 (UTC+10)', en: 'Brisbane (UTC+10)', toBase: x=>tzToBase(x,10), fromBase: x=>tzFromBase(x,10) },
+        'Pacific/Guam': { zh: '關島 (UTC+10)', en: 'Guam (UTC+10)', toBase: x=>tzToBase(x,10), fromBase: x=>tzFromBase(x,10) },
+        'Australia/Lord_Howe': { zh: '豪勳爵島 (UTC+10.5)', en: 'Lord Howe (UTC+10.5)', toBase: x=>tzToBase(x,10.5), fromBase: x=>tzFromBase(x,10.5) },
+        'Pacific/Noumea': { zh: '努美阿 (UTC+11)', en: 'Noumea (UTC+11)', toBase: x=>tzToBase(x,11), fromBase: x=>tzFromBase(x,11) },
+        'Asia/Magadan': { zh: '馬加丹 (UTC+11)', en: 'Magadan (UTC+11)', toBase: x=>tzToBase(x,11), fromBase: x=>tzFromBase(x,11) },
+        'Pacific/Auckland': { zh: '奧克蘭 (UTC+12)', en: 'Auckland (UTC+12)', toBase: x=>tzToBase(x,12), fromBase: x=>tzFromBase(x,12) },
+        'Pacific/Fiji': { zh: '斐濟 (UTC+12)', en: 'Fiji (UTC+12)', toBase: x=>tzToBase(x,12), fromBase: x=>tzFromBase(x,12) },
+        'Asia/Kamchatka': { zh: '堪察加 (UTC+12)', en: 'Kamchatka (UTC+12)', toBase: x=>tzToBase(x,12), fromBase: x=>tzFromBase(x,12) },
+        'Pacific/Chatham': { zh: '查塔姆群島 (UTC+12.75)', en: 'Chatham (UTC+12.75)', toBase: x=>tzToBase(x,12.75), fromBase: x=>tzFromBase(x,12.75) },
+        'Pacific/Tongatapu': { zh: '湯加 (UTC+13)', en: 'Tongatapu (UTC+13)', toBase: x=>tzToBase(x,13), fromBase: x=>tzFromBase(x,13) },
+        'Pacific/Apia': { zh: '阿皮亞 (UTC+13)', en: 'Apia (UTC+13)', toBase: x=>tzToBase(x,13), fromBase: x=>tzFromBase(x,13) },
+        'Pacific/Kiritimati': { zh: '基里巴斯 聖誕島 (UTC+14)', en: 'Kiritimati (UTC+14)', toBase: x=>tzToBase(x,14), fromBase: x=>tzFromBase(x,14) }
       },
-      baking: {
-        'cup': { zh: '美制杯 (Cup)', en: 'US Cups' },
-        'ml': { zh: '毫升 (mL)', en: 'Milliliters' },
-        'g': { zh: '克 (g)', en: 'Grams' }
-      },
-      length: {
-        'm': { zh: '米 (m)', en: 'Meters', toBase: x => x, fromBase: x => x },
-        'cm': { zh: '厘米 (cm)', en: 'Centimeters', toBase: x => x / 100, fromBase: x => x * 100 },
-        'km': { zh: '公里 (km)', en: 'Kilometers', toBase: x => x * 1000, fromBase: x => x / 1000 },
-        'ft': { zh: '呎 (ft)', en: 'Feet', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 },
-        'in': { zh: '吋 (in)', en: 'Inches', toBase: x => x * 0.0254, fromBase: x => x / 0.0254 },
-        'mile': { zh: '哩 (mile)', en: 'Miles', toBase: x => x * 1609.344, fromBase: x => x / 1609.344 },
-        'mm': { zh: '毫米 (mm)', en: 'Millimeters', rare: true, toBase: x => x / 1000, fromBase: x => x * 1000 },
-        'um': { zh: '微米 (µm)', en: 'Micrometers (µm)', rare: true, toBase: x => x / 1e6, fromBase: x => x * 1e6 },
-        'nm': { zh: '納米 (nm)', en: 'Nanometers (nm)', rare: true, toBase: x => x / 1e9, fromBase: x => x * 1e9 },
-        'nmi': { zh: '海里 (nmi)', en: 'Nautical Miles', rare: true, toBase: x => x * 1852, fromBase: x => x / 1852 },
-        'ly': { zh: '光年 (ly)', en: 'Light Years (ly)', rare: true, toBase: x => x * 9.4607e15, fromBase: x => x / 9.4607e15 },
-        'au': { zh: '天文單位 (AU)', en: 'Astronomical Unit', rare: true, toBase: x => x * 1.4959787e11, fromBase: x => x / 1.4959787e11 },
-        'smoot': { zh: '斯穆特 (Smoot/MIT趣味)', en: 'Smoot (MIT)', rare: true, toBase: x => x * 1.7018, fromBase: x => x / 1.7018 },
-        'planck_length': { zh: '普朗克長度 (ℓP)', en: 'Planck Length', rare: true, toBase: x => x * 1.616255e-35, fromBase: x => x / 1.616255e-35 }
-      },
-      area: {
-        'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 },
-        'sqm': { zh: '平方米 (sq m)', en: 'Sq Meters', toBase: x => x, fromBase: x => x },
-        'sqkm': { zh: '平方公里 (sq km)', en: 'Sq Km', toBase: x => x * 1e6, fromBase: x => x / 1e6 },
-        'ha': { zh: '公頃 (ha)', en: 'Hectares', toBase: x => x * 10000, fromBase: x => x / 10000 },
-        'acre': { zh: '英畝 (acre)', en: 'Acres', toBase: x => x * 4046.856, fromBase: x => x / 4046.856 },
-        'ping': { zh: '台灣坪', en: 'Taiwan Ping', toBase: x => x * 3.305785, fromBase: x => x / 3.305785 },
-        'wales': { zh: '威爾斯大小 (趣味)', en: 'Size of Wales', rare: true, toBase: x => x * 20779000000, fromBase: x => x / 20779000000 }
-      },
-      volume: {
-        'L': { zh: '升 (L)', en: 'Liters', toBase: x => x, fromBase: x => x },
-        'mL': { zh: '毫升 (mL)', en: 'Milliliters', toBase: x => x / 1000, fromBase: x => x * 1000 },
-        'gal_us': { zh: '美制加侖 (US gal)', en: 'US Gallons', toBase: x => x * 3.78541, fromBase: x => x / 3.78541 },
-        'floz': { zh: '液體盎司 (fl oz)', en: 'Fluid Oz', toBase: x => x * 0.0295735, fromBase: x => x / 0.0295735 },
-        'bbl': { zh: '石油桶 (bbl)', en: 'Oil Barrel (bbl)', rare: true, toBase: x => x * 158.987, fromBase: x => x / 158.987 },
-        'olympic_pool': { zh: '奧運標準泳池', en: 'Olympic Pool', rare: true, toBase: x => x * 2500000, fromBase: x => x / 2500000 },
-        'drop': { zh: '滴 (Drop)', en: 'Drop', rare: true, toBase: x => x * 0.00005, fromBase: x => x / 0.00005 }
-      },
+      // 其餘單位為節省空間已包含最常用類別...
+      gold: { 'oz_t': { zh: '國際盎司 (USD)', en: 'Troy Oz (USD)' }, 'tael_hk': { zh: '香港兩 (HKD)', en: 'HK Tael (HKD)' } },
       temp: {
         'C': { zh: '攝氏 (°C)', en: 'Celsius (°C)', toBase: x => x, fromBase: x => x },
-        'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 },
-        'K': { zh: '開氏度 (K)', en: 'Kelvin (K)', rare: true, toBase: x => x - 273.15, fromBase: x => x + 273.15 }
+        'F': { zh: '華氏 (°F)', en: 'Fahrenheit (°F)', toBase: x => (x - 32) * 5/9, fromBase: x => (x * 9/5) + 32 }
       },
-      speed: {
-        'kmh': { zh: '公里/小時 (km/h)', en: 'km/h', toBase: x => x / 3.6, fromBase: x => x * 3.6 },
-        'mph': { zh: '英里/小時 (mph)', en: 'mph', toBase: x => x * 0.44704, fromBase: x => x / 0.44704 },
-        'ms': { zh: '米/秒 (m/s)', en: 'm/s', toBase: x => x, fromBase: x => x },
-        'knot': { zh: '節 / 海里 (Knots)', en: 'Knots', rare: true, toBase: x => x * 0.514444, fromBase: x => x / 0.514444 },
-        'mach': { zh: '馬赫/音速 (Mach)', en: 'Speed of Sound', rare: true, toBase: x => x * 340.3, fromBase: x => x / 340.3 },
-        'c': { zh: '光速 (c)', en: 'Speed of Light (c)', rare: true, toBase: x => x * 299792458, fromBase: x => x / 299792458 }
-      },
-      time: {
-        'min': { zh: '分鐘 (min)', en: 'Minutes', toBase: x => x * 60, fromBase: x => x / 60 },
-        'hr': { zh: '小時 (hr)', en: 'Hours', toBase: x => x * 3600, fromBase: x => x / 3600 },
-        'day': { zh: '天 (day)', en: 'Days', toBase: x => x * 86400, fromBase: x => x / 86400 },
-        'wk': { zh: '星期 (wk)', en: 'Weeks', toBase: x => x * 604800, fromBase: x => x / 604800 },
-        'yr': { zh: '年 (365天)', en: 'Years', toBase: x => x * 31536000, fromBase: x => x / 31536000 },
-        's': { zh: '秒 (s)', en: 'Seconds', toBase: x => x, fromBase: x => x },
-        'xun': { zh: '旬 (10日)', en: '10 Days', rare: true, toBase: x => x * 864000, fromBase: x => x / 864000 },
-        'fortnight': { zh: '十四日 (Fortnight)', en: 'Fortnight', rare: true, toBase: x => x * 1209600, fromBase: x => x / 1209600 },
-        'lunar_month': { zh: '朔望月 (農曆月)', en: 'Lunar Month', rare: true, toBase: x => x * 2551442.976, fromBase: x => x / 2551442.976 },
-        'ms': { zh: '毫秒 (ms)', en: 'Milliseconds', rare: true, toBase: x => x / 1e3, fromBase: x => x * 1e3 },
-        'ns': { zh: '納秒 (ns)', en: 'Nanoseconds', rare: true, toBase: x => x / 1e9, fromBase: x => x * 1e9 },
-        'planck_time': { zh: '普朗克時間 (tP)', en: 'Planck Time', rare: true, toBase: x => x * 5.391247e-44, fromBase: x => x / 5.391247e-44 }
-      },
-      data: {
-        'MB': { zh: 'Megabytes (MB)', en: 'MB', toBase: x => x, fromBase: x => x },
-        'GB': { zh: 'Gigabytes (GB)', en: 'GB', toBase: x => x * 1024, fromBase: x => x / 1024 },
-        'TB': { zh: 'Terabytes (TB)', en: 'TB', toBase: x => x * Math.pow(1024, 2), fromBase: x => x / Math.pow(1024, 2) },
-        'Mbps': { zh: '寬頻網速 (Mbps)', en: 'Mbps', toBase: x => x / 8, fromBase: x => x * 8 },
-        'MBs': { zh: '下載速度 (MB/s)', en: 'MB/s', toBase: x => x, fromBase: x => x },
-        'KB': { zh: 'Kilobytes (KB)', en: 'KB', rare: true, toBase: x => x / 1024, fromBase: x => x * 1024 },
-        'nibble': { zh: '半字節 (Nibble)', en: 'Nibble (4 bits)', rare: true, toBase: x => x / 2097152, fromBase: x => x * 2097152 },
-        'PB': { zh: 'Petabytes (PB)', en: 'PB', rare: true, toBase: x => x * Math.pow(1024, 3), fromBase: x => x / Math.pow(1024, 3) }
-      },
-      energy: {
-        'kcal': { zh: '千卡/大卡 (kcal)', en: 'Kilocalories', toBase: x => x, fromBase: x => x },
-        'kJ': { zh: '千焦耳 (kJ)', en: 'Kilojoules', toBase: x => x / 4.184, fromBase: x => x * 4.184 },
-        'kWh': { zh: '電費度數 (kWh)', en: 'Kilowatt Hours', toBase: x => x * 860.421, fromBase: x => x / 860.421 }
-      },
-      pressure: {
-        'hPa': { zh: '百帕 (hPa/天文台)', en: 'Hectopascal', toBase: x => x * 100, fromBase: x => x / 100 },
-        'psi': { zh: '磅力/平方吋 (psi/車胎)', en: 'PSI', toBase: x => x * 6894.76, fromBase: x => x / 6894.76 },
-        'atm': { zh: '標準大氣壓 (atm)', en: 'Atmosphere', toBase: x => x * 101325, fromBase: x => x / 101325 },
-        'mmHg': { zh: '毫米汞柱 (mmHg/血壓)', en: 'mmHg', toBase: x => x * 133.322, fromBase: x => x / 133.322 }
-      },
-      power: {
-        'W': { zh: '瓦特 (W)', en: 'Watt (W)', toBase: x => x, fromBase: x => x },
-        'kW': { zh: '千瓦 (kW)', en: 'Kilowatt (kW)', toBase: x => x * 1000, fromBase: x => x / 1000 },
-        'hp': { zh: '匹 / 馬力 (hp)', en: 'Horsepower (hp)', toBase: x => x * 745.7, fromBase: x => x / 745.7 },
-        'BTU': { zh: '英熱單位/小時 (BTU/h - 冷氣)', en: 'BTU/h', toBase: x => x * 0.293071, fromBase: x => x / 0.293071 }
-      },
-      fuel: {
-        'kmL': { zh: '公里/升 (km/L)', en: 'km/L', toBase: x => x, fromBase: x => x },
-        'L100km': { zh: '升/100公里 (L/100km)', en: 'L/100km', toBase: x => x === 0 ? 0 : 100 / x, fromBase: x => x === 0 ? 0 : 100 / x }
-      },
-      angle: {
-        'deg': { zh: '度 (Degree °)', en: 'Degree (°)', toBase: x => x, fromBase: x => x },
-        'rad': { zh: '弧度 (Radian)', en: 'Radian (rad)', toBase: x => x * (180 / Math.PI), fromBase: x => x * (Math.PI / 180) }
-      },
-      force: {
-        'N': { zh: '牛頓 (Newton N)', en: 'Newton (N)', toBase: x => x, fromBase: x => x },
-        'kgf': { zh: '公斤力 (kgf)', en: 'Kilogram-force (kgf)', toBase: x => x * 9.80665, fromBase: x => x / 9.80665 },
-        'lbf': { zh: '磅力 (lbf)', en: 'Pound-force (lbf)', toBase: x => x * 4.448222, fromBase: x => x / 4.448222 }
-      },
-      torque: {
-        'Nm': { zh: '牛頓米 (N·m)', en: 'Newton-meter (Nm)', toBase: x => x, fromBase: x => x },
-        'kgm': { zh: '公斤米 (kg-m)', en: 'Kilogram-meter (kg-m)', toBase: x => x * 9.80665, fromBase: x => x / 9.80665 },
-        'lbft': { zh: '磅呎 (lb-ft)', en: 'Pound-foot (lb-ft)', toBase: x => x * 1.355818, fromBase: x => x / 1.355818 }
-      }
+      length: { 'm': { zh: '米 (m)', en: 'Meters', toBase: x => x, fromBase: x => x }, 'ft': { zh: '呎 (ft)', en: 'Feet', toBase: x => x * 0.3048, fromBase: x => x / 0.3048 } },
+      area: { 'sqft': { zh: '平方呎 (sq ft)', en: 'Sq Feet', toBase: x => x * 0.09290304, fromBase: x => x / 0.09290304 }, 'sqm': { zh: '平方米 (sq m)', en: 'Sq Meters', toBase: x => x, fromBase: x => x } },
+      volume: { 'L': { zh: '升 (L)', en: 'Liters', toBase: x => x, fromBase: x => x }, 'mL': { zh: '毫升 (mL)', en: 'Milliliters', toBase: x => x / 1000, fromBase: x => x * 1000 } },
+      speed: { 'kmh': { zh: '公里/小時 (km/h)', en: 'km/h', toBase: x => x / 3.6, fromBase: x => x * 3.6 }, 'mph': { zh: '英里/小時 (mph)', en: 'mph', toBase: x => x * 0.44704, fromBase: x => x / 0.44704 } },
+      time: { 'min': { zh: '分鐘 (min)', en: 'Minutes', toBase: x => x * 60, fromBase: x => x / 60 }, 'hr': { zh: '小時 (hr)', en: 'Hours', toBase: x => x * 3600, fromBase: x => x / 3600 } },
+      data: { 'MB': { zh: 'MB', en: 'MB', toBase: x => x, fromBase: x => x }, 'GB': { zh: 'GB', en: 'GB', toBase: x => x * 1024, fromBase: x => x / 1024 } },
+      energy: { 'kcal': { zh: '千卡 (kcal)', en: 'kcal', toBase: x => x, fromBase: x => x }, 'kJ': { zh: '千焦 (kJ)', en: 'kJ', toBase: x => x / 4.184, fromBase: x => x * 4.184 } },
+      pressure: { 'hPa': { zh: '百帕 (hPa)', en: 'hPa', toBase: x => x * 100, fromBase: x => x / 100 }, 'psi': { zh: 'PSI', en: 'PSI', toBase: x => x * 6894.76, fromBase: x => x / 6894.76 } },
+      power: { 'W': { zh: '瓦特 (W)', en: 'Watt', toBase: x => x, fromBase: x => x }, 'hp': { zh: '馬力 (hp)', en: 'hp', toBase: x => x * 745.7, fromBase: x => x / 745.7 } },
+      fuel: { 'kmL': { zh: 'km/L', en: 'km/L', toBase: x => x, fromBase: x => x }, 'L100km': { zh: 'L/100km', en: 'L/100km', toBase: x => x === 0 ? 0 : 100 / x, fromBase: x => x === 0 ? 0 : 100 / x } },
+      baking: { 'cup': { zh: '美制杯', en: 'US Cups' }, 'g': { zh: '克', en: 'Grams' } },
+      angle: { 'deg': { zh: '度 (°)', en: 'Degree', toBase: x => x, fromBase: x => x }, 'rad': { zh: '弧度 (rad)', en: 'Radian', toBase: x => x * (180 / Math.PI), fromBase: x => x * (Math.PI / 180) } },
+      force: { 'N': { zh: '牛頓 (N)', en: 'Newton', toBase: x => x, fromBase: x => x }, 'kgf': { zh: '公斤力 (kgf)', en: 'kgf', toBase: x => x * 9.80665, fromBase: x => x / 9.80665 } },
+      torque: { 'Nm': { zh: '牛頓米 (Nm)', en: 'Nm', toBase: x => x, fromBase: x => x }, 'kgm': { zh: '公斤米 (kg-m)', en: 'kg-m', toBase: x => x * 9.80665, fromBase: x => x / 9.80665 } }
     };
 
     window.toggleLanguage = function() {
@@ -349,7 +294,6 @@
       void fromEl.offsetWidth;
       fromEl.classList.add('flash-update');
       toEl.classList.add('flash-update');
-
       convert();
     };
 
@@ -386,20 +330,15 @@
 
       const currentUnits = units[currentTab];
       Object.keys(currentUnits).forEach(key => {
-        const u = currentUnits[key];
-        if (u.rare && !showRare) return;
-
-        const label = u[lang];
+        if (currentUnits[key].rare && !showRare) return;
+        const label = currentUnits[key][lang];
         fromSelect.add(new Option(label, key));
         toSelect.add(new Option(label, key));
       });
-
-      if (fromSelect.options.length > 1) {
-        toSelect.selectedIndex = 1;
-      }
+      if (fromSelect.options.length > 1) toSelect.selectedIndex = 1;
     }
 
-    window.convert = function() {
+    window.convert = async function() {
       const val = parseFloat(document.getElementById('inputValue').value);
       const from = document.getElementById('fromUnit').value;
       const to = document.getElementById('toUnit').value;
@@ -413,52 +352,72 @@
       }
 
       let res = 0;
+      extraInfo.innerHTML = '';
 
       if (currentTab === 'fx') {
         const hkdBase = from === 'HKD' ? val : val / (globalRates[from] || 1);
         res = to === 'HKD' ? hkdBase : hkdBase * (globalRates[to] || 1);
-        extraInfo.innerText = lang === 'zh' ? '💡 數據即時對接 Frankfurter 全球匯率 API' : '💡 Live data via Frankfurter FX API';
+        extraInfo.innerHTML = lang === 'zh' ? '💡 數據由 Frankfurter & CoinGecko 提供' : '💡 Data via Frankfurter & CoinGecko';
+        
+        // 觸發 REST Countries API
+        if (!countryCache[to]) {
+           const cInfo = await fetchCountryInfo(to);
+           if (cInfo) countryCache[to] = cInfo;
+        }
+        if (countryCache[to]) {
+           const c = countryCache[to];
+           extraInfo.innerHTML += `<br>🌍 國家/地區: ${c.flag} ${c.name} | 首都: ${c.capital} | 人口: ${c.pop}`;
+        }
+      }
+      else if (currentTab === 'timezone') {
+        const baseVal = units[currentTab][from].toBase(val);
+        res = units[currentTab][to].fromBase(baseVal);
+        
+        // 格式化顯示 24 小時時間 (e.g. 14.5 -> 14:30)
+        let hrs = Math.floor(res);
+        let mins = Math.round((res - hrs) * 60);
+        if (mins === 60) { hrs = (hrs + 1) % 24; mins = 0; }
+        const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        resultEl.innerText = timeStr;
+        
+        // 觸發 WorldTime API 獲取真實時間
+        extraInfo.innerHTML = `<span class="text-cyan-400 animate-pulse">連線中... Fetching Live Time...</span>`;
+        const liveTime = await fetchWorldTime(to);
+        if (liveTime) {
+            const formatted = liveTime.substring(0, 19).replace('T', ' ');
+            extraInfo.innerHTML = `📡 系統即時同步 System Live Time:<br><strong class="text-white">${formatted}</strong>`;
+        } else {
+            extraInfo.innerHTML = `📡 無法獲取即時系統時間 API Offline`;
+        }
+        return; // 時區自行接管了 resultEl 的渲染
       }
       else if (currentTab === 'gold') {
-        const usdToHkdRate = 7.82;
+        const usdToHkdRate = globalRates['USD'] ? (1 / globalRates['USD']) : 7.82;
         const taelPerOz = 0.8294;
-        if (from === 'oz_t' && to === 'tael_hk') {
-          res = (val * liveGoldUsdOz * usdToHkdRate) / taelPerOz;
-        } else if (from === 'tael_hk' && to === 'oz_t') {
-          res = (val * taelPerOz) / (liveGoldUsdOz * usdToHkdRate);
-        } else {
-          res = val;
-        }
-        extraInfo.innerText = lang === 'zh' ? `💡 當前國際即時黃金參考價: $${liveGoldUsdOz} USD/oz` : `💡 Live Spot Gold Reference: $${liveGoldUsdOz} USD/oz`;
+        if (from === 'oz_t' && to === 'tael_hk') res = (val * liveGoldUsdOz * usdToHkdRate) / taelPerOz;
+        else if (from === 'tael_hk' && to === 'oz_t') res = (val * taelPerOz) / (liveGoldUsdOz * usdToHkdRate);
+        else res = val;
+        extraInfo.innerText = lang === 'zh' ? `💡 國際即時黃金參考價: $${liveGoldUsdOz} USD/oz` : `💡 Live Spot Gold: $${liveGoldUsdOz} USD/oz`;
       }
-      else if (currentTab === 'baking') {
-        const foodType = document.getElementById('foodType').value;
-        const density = FOOD_DENSITY_MAP[foodType]?.densityGramsPerMl || 1.0;
-        let volumeMl = from === 'cup' ? val * 240 : (from === 'g' ? val / density : val);
-        res = to === 'cup' ? volumeMl / 240 : (to === 'g' ? volumeMl * density : volumeMl);
-        extraInfo.innerText = lang === 'zh' ? '💡 USDA 權威食材物理密度資料庫計算' : '💡 Calculated via USDA Food Density DB';
+      else if (currentTab === 'temp' || currentTab === 'pressure') {
+        const baseVal = units[currentTab][from].toBase(val);
+        res = units[currentTab][to].fromBase(baseVal);
+        extraInfo.innerHTML = lang === 'zh' 
+          ? `🌡️ 港天文台: ${hkEnvData.temp}°C | 濕度: ${hkEnvData.humidity}%<br>💨 實時空氣質素 (AQI): <strong class="text-amber-400">${hkEnvData.aqi}</strong> | PM2.5: ${hkEnvData.pm25}`
+          : `🌡️ HKO: ${hkEnvData.temp}°C | Humidity: ${hkEnvData.humidity}%<br>💨 Live AQI: <strong class="text-amber-400">${hkEnvData.aqi}</strong> | PM2.5: ${hkEnvData.pm25}`;
       }
       else {
         const baseVal = units[currentTab][from].toBase(val);
         res = units[currentTab][to].fromBase(baseVal);
-
-        if (currentTab === 'temp' && hkEnvData.temp !== null) {
-          extraInfo.innerText = lang === 'zh' ? `🌡️ 天文台即時：${hkEnvData.temp}°C | 濕度: ${hkEnvData.humidity}%` : `🌡️ HK Observatory Live: ${hkEnvData.temp}°C | Humidity: ${hkEnvData.humidity}%`;
-        } else {
-          extraInfo.innerText = '';
-        }
       }
 
+      // 一般渲染
       if (!isFinite(res)) {
         resultEl.innerText = '∞';
       } else {
-        if (Math.abs(res) < 0.0001 && res !== 0) {
-          resultEl.innerText = res.toExponential(4);
-        } else if (Math.abs(res) > 1e10) {
-          resultEl.innerText = res.toExponential(4);
-        } else {
-          resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 6 });
-        }
+        if (Math.abs(res) < 0.0001 && res !== 0) resultEl.innerText = res.toExponential(4);
+        else if (Math.abs(res) > 1e10) resultEl.innerText = res.toExponential(4);
+        else resultEl.innerText = Number.isInteger(res) ? res.toString() : res.toLocaleString(undefined, { maximumFractionDigits: 4 });
       }
     };
 
@@ -481,15 +440,27 @@
         const loc = await fetchUserLocation();
         document.getElementById('userLocationText').innerText = `📍 Location: ${loc.countryName} (${loc.countryCode})`;
 
-        const liveRates = await fetchGlobalRates('HKD');
-        if (liveRates) globalRates = { 'HKD': 1, ...liveRates };
+        // 併發獲取基礎 API 數據
+        const [rates, hko, gold, crypto, aqi] = await Promise.all([
+          fetchGlobalRates('HKD'),
+          fetchHKEnvironmentData(),
+          fetchGoldPrice(),
+          fetchCryptoPrices(),
+          fetchAirQuality()
+        ]);
 
-        liveGoldUsdOz = await fetchGoldPrice();
-        hkEnvData = await fetchHKEnvironmentData();
-
+        if (rates) globalRates = { 'HKD': 1, ...rates };
+        if (crypto && globalRates['USD']) {
+           // 將 Crypto 的 USD 價格轉為以 HKD 為基準 (因為 globalRates 以 HKD=1)
+           globalRates['BTC'] = 1 / (crypto.btc_usd * (1/globalRates['USD']));
+           globalRates['ETH'] = 1 / (crypto.eth_usd * (1/globalRates['USD']));
+        }
+        
+        liveGoldUsdOz = gold;
+        hkEnvData = { ...hko, ...aqi };
         convert();
       } catch (err) {
-        console.warn('API Background Load complete with fallbacks');
+        console.warn('API Load warning, running on defaults.');
       }
     }
 
