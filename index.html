@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
+  <link rel="manifest" href="./manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker 註冊成功'))
+        .catch(err => console.warn('SW 註冊失敗:', err));
+    });
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <title>秒換 SecUnit - 終極萬能轉換器</title>
