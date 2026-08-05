@@ -1,4 +1,4 @@
-# ⚡ 秒換 SecUnit - 終極萬能單位與時區轉換器 (Instant Converter)
+# ⚡ 秒換 SecUnit - 萬用單位與時區轉換器 (Instant Converter)
 
 [English](#english) | [繁體中文](#繁體中文)
 
