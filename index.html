@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-  <link rel="manifest" href="./manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('Service Worker 註冊成功'))
-        .catch(err => console.warn('SW 註冊失敗:', err));
-    });
-  }
-</script>
   <meta charset="UTF-8">
+  <!-- Google Site Verification -->
+  <meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <title>秒換 SecUnit - 萬用轉換器</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('Service Worker 註冊成功'))
+          .catch(err => console.warn('SW 註冊失敗:', err));
+      });
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
