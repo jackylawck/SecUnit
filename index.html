@@ -7,7 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <title>秒換 SecUnit - 萬用轉換器</title>
 
+  <!-- PWA Manifest & Icons -->
   <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./secuniticon-192.png"> <!-- 補上這行：iOS 專屬桌面圖示 -->
+  
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
